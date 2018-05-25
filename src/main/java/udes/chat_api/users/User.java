@@ -8,47 +8,42 @@ import javax.persistence.Id;
 public class User
 {
     @Id
-    @Column(name = "user_id")
-    private Integer userId;
-
     @Column(name = "cip")
     private String cip;
 
     @Column(name = "first_name")
     private String firstName;
 
-    @Column(name="last_name")
+    @Column(name = "last_name")
     private String lastName;
 
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-    public String getCip() {
+    public String getCip()
+    {
         return cip;
     }
 
-    public void setCip(String cip) {
+    public void setCip(String cip)
+    {
         this.cip = cip;
     }
 
-    public String getFirstName() {
+    public String getFirstName()
+    {
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
+    public void setFirstName(String firstName)
+    {
         this.firstName = firstName;
     }
 
-    public String getLastName() {
+    public String getLastName()
+    {
         return lastName;
     }
 
-    public void setLastName(String lastName) {
+    public void setLastName(String lastName)
+    {
         this.lastName = lastName;
     }
 }
