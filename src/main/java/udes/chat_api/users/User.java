@@ -4,17 +4,17 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-@Entity(name = "users")
+@Entity(name = "USER")
 public class User
 {
     @Id
     @Column(name = "cip")
     private String cip;
 
-    @Column(name = "first_name")
+    @Column(name = "user_firstname")
     private String firstName;
 
-    @Column(name = "last_name")
+    @Column(name = "user_lastname")
     private String lastName;
 
     public String getCip()
