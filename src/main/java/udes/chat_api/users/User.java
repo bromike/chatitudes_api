@@ -1,9 +1,14 @@
 package udes.chat_api.users;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+@Getter
+@Setter
 @Entity(name = "USER")
 public class User
 {
@@ -16,34 +21,4 @@ public class User
 
     @Column(name = "user_lastname")
     private String lastName;
-
-    public String getCip()
-    {
-        return cip;
-    }
-
-    public void setCip(String cip)
-    {
-        this.cip = cip;
-    }
-
-    public String getFirstName()
-    {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName)
-    {
-        this.firstName = firstName;
-    }
-
-    public String getLastName()
-    {
-        return lastName;
-    }
-
-    public void setLastName(String lastName)
-    {
-        this.lastName = lastName;
-    }
 }

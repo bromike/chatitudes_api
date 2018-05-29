@@ -1,9 +1,14 @@
 package udes.chat_api.rooms;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+@Getter
+@Setter
 @Entity(name = "room")
 public class Room
 {
@@ -16,34 +21,4 @@ public class Room
 
     @Column(name = "room_public")
     private boolean isPublic;
-
-    public Integer getRoomId()
-    {
-        return roomId;
-    }
-
-    public void setRoomId(Integer roomId)
-    {
-        this.roomId = roomId;
-    }
-
-    public String getName()
-    {
-        return name;
-    }
-
-    public void setName(String name)
-    {
-        this.name = name;
-    }
-
-    public boolean isPublic()
-    {
-        return isPublic;
-    }
-
-    public void setPublic(boolean aPublic)
-    {
-        isPublic = aPublic;
-    }
 }
