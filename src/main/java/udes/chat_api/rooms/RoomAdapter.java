@@ -12,13 +12,13 @@ public class RoomAdapter
 
     private ModelMapper modelMapper = new ModelMapper();
 
-    private RoomDto toDto(Room room) {
+    public RoomDto toDto(Room room) {
         RoomDto roomDto = modelMapper.map(room, RoomDto.class);
 
         return roomDto;
     }
 
-    private Room toEntity(RoomDto roomDto)
+    public Room toEntity(RoomDto roomDto)
     {
         Room room = modelMapper.map(roomDto, Room.class);
 

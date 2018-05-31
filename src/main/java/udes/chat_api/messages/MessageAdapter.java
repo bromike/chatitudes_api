@@ -12,13 +12,13 @@ public class MessageAdapter
 
     private ModelMapper modelMapper = new ModelMapper();
 
-    private MessageDto toDto(Message message) {
+    public MessageDto toDto(Message message) {
         MessageDto messageDto = modelMapper.map(message, MessageDto.class);
 
         return messageDto;
     }
 
-    private Message toEntity(MessageDto messageDto)
+    public Message toEntity(MessageDto messageDto)
     {
         Message message = modelMapper.map(messageDto, Message.class);
 

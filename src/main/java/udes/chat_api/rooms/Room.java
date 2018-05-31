@@ -2,10 +2,10 @@ package udes.chat_api.rooms;
 
 import lombok.Getter;
 import lombok.Setter;
+import udes.chat_api.channels.Channel;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Setter
@@ -21,4 +21,7 @@ public class Room
 
     @Column(name = "room_public")
     private boolean isPublic;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "room")
+    private List<Channel> channels;
 }
