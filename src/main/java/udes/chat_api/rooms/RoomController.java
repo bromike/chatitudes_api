@@ -1,18 +1,13 @@
 package udes.chat_api.rooms;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import udes.chat_api.gateway.RoomGateway;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Controller
-@RequestMapping("/room")
+@RestController
 public class RoomController
 {
     @Autowired
@@ -20,7 +15,7 @@ public class RoomController
     @Autowired
     private RoomAdapter roomAdapter;
 
-    @GetMapping("/")
+    @GetMapping("/room")
     public List<RoomDto> getRooms()
     {
         List<Room> rooms = roomGateway.getRooms();
@@ -30,7 +25,7 @@ public class RoomController
                 .collect(Collectors.toList());          //TODO: needed?
     }
 
-    @PostMapping("/")
+    @PostMapping("/room")
     public RoomDto createRoom(@RequestBody RoomDto roomDto)
     {
         Room room = roomAdapter.toEntity(roomDto);

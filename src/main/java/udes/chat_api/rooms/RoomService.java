@@ -14,7 +14,7 @@ public class RoomService
 
     public List<Room> getRooms()
     {
-        return Converter.iterableToList(roomRepository.findAll());
+        return roomRepository.findAll();
     }
 
     public Room createRoom(Room room)
