@@ -13,6 +13,7 @@ import java.util.List;
 public class Room
 {
     @Id
+    @GeneratedValue
     @Column(name = "room_id")
     private Integer roomId;
 

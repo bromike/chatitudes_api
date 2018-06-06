@@ -30,8 +30,42 @@ public class RoomController
     {
         Room room = roomAdapter.toEntity(roomDto);
 
-        Room resultRoom = roomGateway.createRoom(room);
+        Room roomCreated = roomGateway.createRoom(room);
 
-        return roomAdapter.toDto(resultRoom);
+        return roomAdapter.toDto(roomCreated);
+    }
+
+    @PutMapping("/room")
+    public RoomDto updateRoom(@RequestBody RoomDto roomDto)
+    {
+        Room room = roomAdapter.toEntity(roomDto);
+
+        Room updatedRoom = roomGateway.updateRoom(room);
+
+        return roomAdapter.toDto(updatedRoom);
+    }
+
+    @PostMapping("/room/search")
+    public List<RoomDto> searchRoom(@RequestBody String query)
+    {
+        List<Room> rooms = roomGateway.searchRoom(query);
+
+        return rooms.stream()
+                .map(room -> roomAdapter.toDto(room))
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("/room/{id}")
+    public RoomDto getRoom(@PathVariable("id") int roomId)
+    {
+        Room room = roomGateway.getRoom(roomId);
+
+        return roomAdapter.toDto(room);
+    }
+
+    @DeleteMapping("/room/{id}")
+    public void deleteRoom(@PathVariable("id") int roomId)
+    {
+        roomGateway.deleteRoom(roomId);
     }
 }
