@@ -3,8 +3,13 @@ package udes.chat_api.users;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface UserRepository extends CrudRepository<User, Long>
 {
-    public User findByUserId(String userid);
+    @Override
+    List<User> findAll();
+
+    User findByCip(String cip);
 }

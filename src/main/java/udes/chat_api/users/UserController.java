@@ -1,22 +1,29 @@
 package udes.chat_api.users;
-//package udes.chatitudes_web_api.users;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+
 import org.springframework.web.bind.annotation.RestController;
+import udes.chat_api.gateway.UserGateway;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/user")
 public class UserController
 {
     @Autowired
-    private UserRepository userRepository;
+    private UserGateway userGateway;
+    @Autowired
+    private UserAdapter userAdapter;
 
-    @GetMapping("/")
-    public String getViewClinic(Model model)
+    @GetMapping("/user")
+    public List<UserDto> getUsers()
     {
-        Iterable<User> users = userRepository.findAll();
-        return "";
+        List<User> users = userGateway.getUsers();
+
+        return users.stream()
+                .map(user -> userAdapter.toDto(user))
+                .collect(Collectors.toList());
     }
 }
