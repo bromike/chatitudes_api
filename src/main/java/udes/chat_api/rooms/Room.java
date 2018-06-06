@@ -23,6 +23,6 @@ public class Room
     @Column(name = "room_public")
     private boolean isPublic;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "room")
-    private List<Channel> channels;
+//    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "room")
+//    private List<Channel> channels;
 }
