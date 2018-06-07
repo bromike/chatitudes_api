@@ -4,6 +4,7 @@ import org.jasig.cas.client.validation.Cas20ServiceTicketValidator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.cas.ServiceProperties;
+import org.springframework.security.cas.authentication.CasAssertionAuthenticationToken;
 import org.springframework.security.cas.authentication.CasAuthenticationProvider;
 import org.springframework.security.cas.web.CasAuthenticationFilter;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -11,6 +12,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.cas.web.CasAuthenticationEntryPoint;
+import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetailsByNameServiceWrapper;
 
 
@@ -23,7 +25,7 @@ public class CasSecurityChatApi{
         @Bean
         public ServiceProperties serviceProperties(){
             ServiceProperties serviceProperties = new ServiceProperties();
-            serviceProperties.setService("http://localhost:8080/cas/");
+            serviceProperties.setService("http://localhost:8080/login/cas");
             serviceProperties.setSendRenew(false);
             return serviceProperties;
         }
@@ -36,6 +38,12 @@ public class CasSecurityChatApi{
         }
 
         @Bean
+        public Cas20ServiceTicketValidator cas20ServiceTicketValidator() {
+            Cas20ServiceTicketValidator ticketValidator = new Cas20ServiceTicketValidator("https://cas.usherbrooke.ca/");
+            return ticketValidator;
+        }
+
+        @Bean
         public CasAuthenticationEntryPoint casAuthenticationEntryPoint() {
             CasAuthenticationEntryPoint casAuthenticationEntryPoint = new CasAuthenticationEntryPoint();
             casAuthenticationEntryPoint.setLoginUrl("https://cas.usherbrooke.ca/login");
@@ -44,12 +52,17 @@ public class CasSecurityChatApi{
         }
 
         @Bean
+        public AuthenticationUserDetailsService<CasAssertionAuthenticationToken> customUserDetailsService() {
+            return new CustomUserDetailsService();
+        }
+
+        @Bean
         public CasAuthenticationProvider casAuthenticationProvider(){
             CasAuthenticationProvider cap = new CasAuthenticationProvider();
-            cap.setTicketValidator(new Cas20ServiceTicketValidator("https://cas.usherbrooke.ca/validateService"));
+            cap.setTicketValidator(cas20ServiceTicketValidator());
             cap.setServiceProperties(serviceProperties());
             cap.setKey("casChattitudesAPI");
-            cap.setAuthenticationUserDetailsService(new UserDetailsByNameServiceWrapper(userDetailsService()));
+            cap.setAuthenticationUserDetailsService(customUserDetailsService());
             return cap;
         }
 
@@ -68,7 +81,7 @@ public class CasSecurityChatApi{
                     and().
                     addFilter(casAuthenticationFilter()).
                     authorizeRequests().
-                    antMatchers("/", "/cas").
+                    antMatchers("/", "/login/cas").
                     permitAll().
                     anyRequest().
                     authenticated();
