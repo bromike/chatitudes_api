@@ -12,7 +12,7 @@ public class MessageDto
 {
     private Integer messageId;
     private String content;
-    private Channel channel;
-    private User author;
+    private int channelId;
+    private String userCip;
     private DateTime time;
 }
