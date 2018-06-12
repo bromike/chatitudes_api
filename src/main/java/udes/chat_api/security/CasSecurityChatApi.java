@@ -14,6 +14,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.cas.web.CasAuthenticationEntryPoint;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetailsByNameServiceWrapper;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 
 @Configuration
@@ -75,16 +80,29 @@ public class CasSecurityChatApi{
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
-            http.authenticationProvider(casAuthenticationProvider()).
+            http.cors().and().authenticationProvider(casAuthenticationProvider()).
                     exceptionHandling().
                     authenticationEntryPoint(casAuthenticationEntryPoint()).
                     and().
                     addFilter(casAuthenticationFilter()).
                     authorizeRequests().
-                    antMatchers("/", "/login/cas").
+                    antMatchers("/validateLogin", "/login/cas").
                     permitAll().
                     anyRequest().
                     authenticated();
+
+            }
+
+        @Bean
+        CorsConfigurationSource corsConfigurationSource() {
+            CorsConfiguration configuration = new CorsConfiguration();
+            configuration.setAllowedOrigins(Arrays.asList("*"));
+            configuration.setAllowedMethods(Arrays.asList("*"));
+            configuration.setAllowCredentials(true);
+            configuration.setAllowedHeaders(Arrays.asList("*"));
+            UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+            source.registerCorsConfiguration("/**", configuration);
+            return source;
         }
     }
 }
