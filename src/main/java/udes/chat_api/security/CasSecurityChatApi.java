@@ -13,7 +13,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.cas.web.CasAuthenticationEntryPoint;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
-import org.springframework.security.core.userdetails.UserDetailsByNameServiceWrapper;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -43,7 +42,7 @@ public class CasSecurityChatApi{
         }
 
         @Bean
-        public Cas20ServiceTicketValidator cas20ServiceTicketValidator() {
+        static public Cas20ServiceTicketValidator cas20ServiceTicketValidator() {
             Cas20ServiceTicketValidator ticketValidator = new Cas20ServiceTicketValidator("https://cas.usherbrooke.ca/");
             return ticketValidator;
         }
@@ -57,7 +56,7 @@ public class CasSecurityChatApi{
         }
 
         @Bean
-        public AuthenticationUserDetailsService<CasAssertionAuthenticationToken> customUserDetailsService() {
+        static public AuthenticationUserDetailsService<CasAssertionAuthenticationToken> customUserDetailsService() {
             return new CustomUserDetailsService();
         }
 
@@ -86,7 +85,7 @@ public class CasSecurityChatApi{
                     and().
                     addFilter(casAuthenticationFilter()).
                     authorizeRequests().
-                    antMatchers("/validateLogin", "/login/cas").
+                    antMatchers("/validateTicket","/validateLogin", "/login/cas").
                     permitAll().
                     anyRequest().
                     authenticated();
