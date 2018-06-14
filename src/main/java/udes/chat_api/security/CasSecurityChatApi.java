@@ -88,7 +88,7 @@ public class CasSecurityChatApi{
                     antMatchers("/validateTicket","/validateLogin", "/login/cas").
                     permitAll().
                     anyRequest().
-                    authenticated();
+                    authenticated().and().csrf().disable();
 
             }
 
