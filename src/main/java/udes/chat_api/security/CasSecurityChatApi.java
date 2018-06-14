@@ -42,13 +42,13 @@ public class CasSecurityChatApi{
         }
 
         @Bean
-        static public Cas20ServiceTicketValidator cas20ServiceTicketValidator() {
+        public Cas20ServiceTicketValidator cas20ServiceTicketValidator() {
             Cas20ServiceTicketValidator ticketValidator = new Cas20ServiceTicketValidator("https://cas.usherbrooke.ca/");
             return ticketValidator;
         }
 
         @Bean
-        public CasAuthenticationEntryPoint casAuthenticationEntryPoint() {
+         public CasAuthenticationEntryPoint casAuthenticationEntryPoint() {
             CasAuthenticationEntryPoint casAuthenticationEntryPoint = new CasAuthenticationEntryPoint();
             casAuthenticationEntryPoint.setLoginUrl("https://cas.usherbrooke.ca/login");
             casAuthenticationEntryPoint.setServiceProperties(serviceProperties());
@@ -56,7 +56,7 @@ public class CasSecurityChatApi{
         }
 
         @Bean
-        static public AuthenticationUserDetailsService<CasAssertionAuthenticationToken> customUserDetailsService() {
+        public AuthenticationUserDetailsService<CasAssertionAuthenticationToken> customUserDetailsService() {
             return new CustomUserDetailsService();
         }
 
