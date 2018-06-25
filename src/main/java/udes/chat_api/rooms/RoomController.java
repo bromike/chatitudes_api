@@ -65,8 +65,10 @@ public class RoomController
     }
 
     @DeleteMapping("/room/{id}")
-    public void deleteRoom(@PathVariable("id") int roomId)
+    public RoomDto deleteRoom(@PathVariable("id") int roomId)
     {
-        roomGateway.deleteRoom(roomId);
+        Room room = roomGateway.deleteRoom(roomId);
+
+        return roomAdapter.toDto(room);
     }
 }

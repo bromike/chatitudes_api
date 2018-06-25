@@ -1,6 +1,5 @@
 package udes.chat_api.messages;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import udes.chat_api.channels.ChannelRepository;
@@ -14,12 +13,8 @@ public class MessageAdapter
     @Autowired
     private ChannelRepository channelRepository;
 
-
-    private ModelMapper modelMapper = new ModelMapper();
-
     public MessageDto toDto(Message message)
     {
-        //return modelMapper.map(message, MessageDto.class);
 
         MessageDto messageDto = new MessageDto();
 
@@ -34,13 +29,11 @@ public class MessageAdapter
 
     public Message toEntity(MessageDto messageDto)
     {
-        //return modelMapper.map(messageDto, Message.class);
-
         Message message = new Message();
 
         message.setMessageId(messageDto.getMessageId());
         message.setAuthor(userRepository.findByCip(messageDto.getUserCip()));
-        message.setChannel(channelRepository.findByChannelId(messageDto.getChannelId()));
+        message.setChannel(channelRepository.findByChannelIdAndIsDeletedFalse(messageDto.getChannelId()));
         message.setContent(messageDto.getContent());
         message.setTime(messageDto.getTime());
 

@@ -14,9 +14,9 @@ public interface MessageRepository extends CrudRepository<Message, Long>
     @Override
     List<Message> findAll();
 
-    Message findByMessageId(Integer messageId);
+    Message findByMessageIdAndIsDeletedFalse(Integer messageId);
 
-    List<Message> findByChannelChannelId(int channelId);
+    List<Message> findByIsDeletedFalseAndChannelChannelId(int channelId);
 
     @Transactional
     void deleteByMessageId(int messageId);

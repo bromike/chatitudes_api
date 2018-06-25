@@ -12,11 +12,11 @@ public interface ChannelRepository extends CrudRepository<Channel, Long>
     @Override
     List<Channel> findAll();
 
-    Channel findByChannelId(int channelId);
+    Channel findByChannelIdAndIsDeletedFalse(int channelId);
 
-    List<Channel> findByNameContaining(String name);
+    List<Channel> findByNameContainingAndIsDeletedFalse(String name);
 
-    List<Channel> findByRoomRoomIdOrderByNameAsc(int roomId);
+    List<Channel> findByIsDeletedFalseAndRoomRoomIdOrderByNameAsc(int roomId);
 
     @Transactional
     void deleteChannelByChannelId(int channelId);

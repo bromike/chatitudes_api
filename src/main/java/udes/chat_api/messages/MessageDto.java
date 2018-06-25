@@ -15,4 +15,5 @@ public class MessageDto
     private int channelId;
     private String userCip;
     private DateTime time;
+    private boolean isDeleted;
 }

@@ -1,10 +1,7 @@
 package udes.chat_api.channels;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import udes.chat_api.messages.Message;
-import udes.chat_api.messages.MessageDto;
 import udes.chat_api.rooms.RoomRepository;
 
 @Service
@@ -12,8 +9,6 @@ public class ChannelAdapter
 {
     @Autowired
     private RoomRepository roomRepository;
-    @Autowired
-    private ChannelRepository channelRepository;
 
     public ChannelDto toDto(Channel channel)
     {
@@ -35,7 +30,7 @@ public class ChannelAdapter
 
         channel.setChannelId(channelDto.getChannelId());
         channel.setName(channelDto.getName());
-        channel.setRoom(roomRepository.findByRoomId(channelDto.getRoomId()));
+        channel.setRoom(roomRepository.findByRoomIdAndIsDeletedFalse(channelDto.getRoomId()));
         channel.setPublic(channelDto.isPublic());
         channel.setType(channelDto.getType());
 

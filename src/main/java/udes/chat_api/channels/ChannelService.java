@@ -13,7 +13,7 @@ public class ChannelService
 
     public List<Channel> getChannelsByRoomId(int roomId)
     {
-        return channelRepository.findByRoomRoomIdOrderByNameAsc(roomId);
+        return channelRepository.findByIsDeletedFalseAndRoomRoomIdOrderByNameAsc(roomId);
     }
 
     public Channel createChannel(Channel channel)
@@ -23,17 +23,17 @@ public class ChannelService
 
     public Channel getChannel(int channelId)
     {
-        return channelRepository.findByChannelId(channelId);
+        return channelRepository.findByChannelIdAndIsDeletedFalse(channelId);
     }
 
     public List<Channel> searchChannel(String query)
     {
-        return channelRepository.findByNameContaining(query);
+        return channelRepository.findByNameContainingAndIsDeletedFalse(query);
     }
 
     public Channel updateChannel(Channel channel)
     {
-        Channel channelToUpdate = channelRepository.findByChannelId(channel.getChannelId());
+        Channel channelToUpdate = channelRepository.findByChannelIdAndIsDeletedFalse(channel.getChannelId());
 
         if(channelToUpdate == null)
         {
@@ -44,10 +44,18 @@ public class ChannelService
         return channelRepository.save(channel);
     }
 
-    public void deleteChannel(int channelId)
+    public Channel deleteChannel(int channelId)
     {
-        channelRepository.deleteChannelByChannelId(channelId);
+        Channel channelToDelete = channelRepository.findByChannelIdAndIsDeletedFalse(channelId);
 
-        // TODO: return delete success/fail
+        if(channelToDelete == null || channelToDelete.isDeleted())
+        {
+            // Error handling, cannot delete a channel that does not exist or is already deleted
+            return null;
+        }
+
+        channelToDelete.setDeleted(true);
+
+        return channelRepository.save(channelToDelete);
     }
 }

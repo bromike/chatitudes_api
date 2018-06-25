@@ -28,4 +28,7 @@ public class Channel
 
     @Column(name = "channel_public")
     private boolean isPublic;
+
+    @Column(name = "channel_deleted")
+    private boolean isDeleted;
 }

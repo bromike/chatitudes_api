@@ -13,7 +13,7 @@ public class MessageService
 
     public List<Message> getMessagesByChannelId(int channelId)
     {
-        return messageRepository.findByChannelChannelId(channelId);
+        return messageRepository.findByIsDeletedFalseAndChannelChannelId(channelId);
     }
 
     public Message createMessage(Message message)
@@ -25,12 +25,12 @@ public class MessageService
 
     public Message getMessage(int messageId)
     {
-        return messageRepository.findByMessageId(messageId);
+        return messageRepository.findByMessageIdAndIsDeletedFalse(messageId);
     }
 
     public Message updateMessage(Message message)
     {
-        Message messageToUpdate = messageRepository.findByMessageId(message.getMessageId());
+        Message messageToUpdate = messageRepository.findByMessageIdAndIsDeletedFalse(message.getMessageId());
 
         if(messageToUpdate == null)
         {
@@ -41,10 +41,18 @@ public class MessageService
         return messageRepository.save(message);
     }
 
-    public void deleteMessage(int messageId)
+    public Message deleteMessage(int messageId)
     {
-        messageRepository.deleteByMessageId(messageId);
+        Message messageToDelete = messageRepository.findByMessageIdAndIsDeletedFalse(messageId);
 
-        // TODO: return delete success/fail
+        if(messageToDelete == null || messageToDelete.isDeleted())
+        {
+            // Error handling, cannot delete a message that does not exist
+            return null;
+        }
+
+        messageToDelete.setDeleted(true);
+
+        return messageRepository.save(messageToDelete);
     }
 }
