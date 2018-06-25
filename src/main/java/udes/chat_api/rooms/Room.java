@@ -13,6 +13,7 @@ import java.util.List;
 public class Room
 {
     @Id
+    @GeneratedValue
     @Column(name = "room_id")
     private Integer roomId;
 
@@ -22,6 +23,6 @@ public class Room
     @Column(name = "room_public")
     private boolean isPublic;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "room")
-    private List<Channel> channels;
+//    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "room")
+//    private List<Channel> channels;
 }

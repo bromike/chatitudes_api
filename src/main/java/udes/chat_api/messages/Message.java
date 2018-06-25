@@ -15,6 +15,7 @@ import javax.persistence.*;
 public class Message
 {
     @Id
+    @GeneratedValue
     @Column(name = "message_id")
     private Integer messageId;
 

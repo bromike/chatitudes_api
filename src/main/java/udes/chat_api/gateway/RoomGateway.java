@@ -25,4 +25,24 @@ public class RoomGateway
 
         return roomService.createRoom(room);
     }
+
+    public Room getRoom(int roomId)
+    {
+        return roomService.getRoom(roomId);
+    }
+
+    public List<Room> searchRoom(String query)
+    {
+        return roomService.searchRoom(query);
+    }
+
+    public Room updateRoom(Room room)
+    {
+        return roomService.updateRoom(room);
+    }
+
+    public void deleteRoom(int roomId)
+    {
+        roomService.deleteRoom(roomId);
+    }
 }

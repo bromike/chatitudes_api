@@ -11,7 +11,7 @@ public class ChannelDto
 {
     private Integer channelId;
     private int type;
-    private Room room;
+    private int roomId;
     private String name;
     private boolean isPublic;
 }

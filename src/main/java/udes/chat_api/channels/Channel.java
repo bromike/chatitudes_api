@@ -12,6 +12,7 @@ import udes.chat_api.rooms.Room;
 public class Channel
 {
     @Id
+    @GeneratedValue
     @Column(name = "channel_id")
     private Integer channelId;
 
