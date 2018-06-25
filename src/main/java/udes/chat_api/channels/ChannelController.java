@@ -7,6 +7,7 @@ import udes.chat_api.gateway.ChannelGateway;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@CrossOrigin(origins = "http://localhost:8080")
 @RestController
 public class ChannelController
 {
@@ -16,9 +17,9 @@ public class ChannelController
     private ChannelAdapter channelAdapter;
 
     @GetMapping("/channel")
-    public List<ChannelDto> getChannelsByRoomId(@RequestParam int channelId)
+    public List<ChannelDto> getChannelsByRoomId(@RequestParam int roomId)
     {
-        List<Channel> channels = channelGateway.getChannelsByRoomId(channelId);
+        List<Channel> channels = channelGateway.getChannelsByRoomId(roomId);
 
         return channels.stream()
                 .map(channel -> channelAdapter.toDto(channel))
