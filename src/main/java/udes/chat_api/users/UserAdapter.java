@@ -1,15 +1,11 @@
 package udes.chat_api.users;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserAdapter
 {
-    @Autowired
-    private UserRepository userRepository;
-
     private ModelMapper modelMapper = new ModelMapper();
 
     public UserDto toDto(User user) {

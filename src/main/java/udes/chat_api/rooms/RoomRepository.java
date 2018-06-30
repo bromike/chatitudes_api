@@ -3,8 +3,6 @@ package udes.chat_api.rooms;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import udes.chat_api.channels.Channel;
-import udes.chat_api.users.User;
 
 import java.util.List;
 
