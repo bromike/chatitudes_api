@@ -32,4 +32,7 @@ public class Message
 
     @Column(name = "message_timestamp")
     private DateTime time;
+
+    @Column(name = "message_deleted")
+    private boolean isDeleted;
 }

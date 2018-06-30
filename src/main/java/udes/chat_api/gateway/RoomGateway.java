@@ -41,8 +41,8 @@ public class RoomGateway
         return roomService.updateRoom(room);
     }
 
-    public void deleteRoom(int roomId)
+    public Room deleteRoom(int roomId)
     {
-        roomService.deleteRoom(roomId);
+        return roomService.deleteRoom(roomId);
     }
 }

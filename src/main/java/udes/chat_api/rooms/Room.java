@@ -23,6 +23,9 @@ public class Room
     @Column(name = "room_public")
     private boolean isPublic;
 
+    @Column(name = "room_deleted")
+    private boolean isDeleted;
+
 //    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "room")
 //    private List<Channel> channels;
 }

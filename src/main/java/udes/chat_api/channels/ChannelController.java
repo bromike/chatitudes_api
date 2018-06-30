@@ -65,8 +65,10 @@ public class ChannelController
     }
 
     @DeleteMapping("/channel/{id}")
-    public void deleteChannel(@PathVariable("id") int channelId)
+    public ChannelDto deleteChannel(@PathVariable("id") int channelId)
     {
-        channelGateway.deleteChannel(channelId);
+        Channel channel = channelGateway.deleteChannel(channelId);
+
+        return channelAdapter.toDto(channel);
     }
 }

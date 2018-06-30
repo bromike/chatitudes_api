@@ -41,8 +41,8 @@ public class ChannelGateway
         return channelService.updateChannel(channel);
     }
 
-    public void deleteChannel(int channelId)
+    public Channel deleteChannel(int channelId)
     {
-        channelService.deleteChannel(channelId);
+        return channelService.deleteChannel(channelId);
     }
 }

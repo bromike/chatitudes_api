@@ -55,8 +55,10 @@ public class MessageController
     }
 
     @DeleteMapping("/message/{id}")
-    public void deleteMessage(@PathVariable("id") int messageId)
+    public MessageDto deleteMessage(@PathVariable("id") int messageId)
     {
-        messageGateway.deleteMessage(messageId);
+        Message message = messageGateway.deleteMessage(messageId);
+
+        return messageAdapter.toDto(message);
     }
 }

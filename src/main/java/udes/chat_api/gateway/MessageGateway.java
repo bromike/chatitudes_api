@@ -20,9 +20,6 @@ public class MessageGateway
 
     public Message createMessage(Message message)
     {
-        // Check privileges
-        // Return privilege error if the user does not have the required privileges
-
         return messageService.createMessage(message);
     }
 
@@ -36,8 +33,8 @@ public class MessageGateway
         return messageService.updateMessage(message);
     }
 
-    public void deleteMessage(int messageId)
+    public Message deleteMessage(int messageId)
     {
-        messageService.deleteMessage(messageId);
+        return messageService.deleteMessage(messageId);
     }
 }

@@ -14,9 +14,11 @@ public interface RoomRepository extends CrudRepository<Room, Long>
     @Override
     List<Room> findAll();
 
-    Room findByRoomId(int roomId);
+    List<Room> findByIsDeletedFalse();
 
-    List<Room> findByNameContaining(String name);
+    Room findByRoomIdAndIsDeletedFalse(int roomId);
+
+    List<Room> findByNameContainingAndIsDeletedFalse(String name);
 
     @Transactional
     void deleteByRoomId(int roomId);
