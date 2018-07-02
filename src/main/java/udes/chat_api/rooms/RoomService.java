@@ -5,8 +5,10 @@ import org.springframework.stereotype.Service;
 import udes.chat_api.constants.PrivilegeType;
 import udes.chat_api.room_privileges.RoomPrivilege;
 import udes.chat_api.room_privileges.RoomPrivilegeRepository;
+import udes.chat_api.room_privileges.RoomPrivilegeService;
 import udes.chat_api.users.UserRepository;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -17,11 +19,26 @@ public class RoomService
     @Autowired
     private RoomPrivilegeRepository roomPrivilegeRepository;
     @Autowired
+    private RoomPrivilegeService roomPrivilegeService;
+    @Autowired
     private UserRepository userRepository;
 
     public List<Room> getRooms()
     {
-        return roomRepository.findByIsDeletedFalse();
+        List<Room> rooms = roomRepository.findByIsDeletedFalseAndIsPublicTrue();
+        List<RoomPrivilege> roomPrivileges = roomPrivilegeRepository.findByUserCip("stpe1704"); // TODO: replace hardcoded user cip
+
+        for(RoomPrivilege roomPrivilege : roomPrivileges)
+        {
+            Room privateRoom = roomRepository.findByRoomIdAndIsDeletedFalseAndIsPublicFalse(roomPrivilege.getRoom().getRoomId());
+
+            if(privateRoom != null)
+            {
+                rooms.add(privateRoom);
+            }
+        }
+
+        return rooms;
     }
 
     public Room createRoom(Room room)
@@ -39,7 +56,19 @@ public class RoomService
 
     public Room getRoom(int roomId)
     {
-        return roomRepository.findByRoomIdAndIsDeletedFalse(roomId);
+        Room room = roomRepository.findByRoomIdAndIsDeletedFalse(roomId);
+
+        if(!room.isPublic())
+        {
+            List<Integer> authorizedUser = Arrays.asList(PrivilegeType.admin, PrivilegeType.moderator, PrivilegeType.member);
+
+            if(!roomPrivilegeService.userHasRequiredPrivilege("stpe1704", authorizedUser, room.getRoomId()))
+            {
+                return null;
+            }
+        }
+
+        return room;
     }
 
     public List<Room> searchRoom(String query)
@@ -53,7 +82,7 @@ public class RoomService
 
         if(roomToUpdate == null)
         {
-            // Error handling, cannot update a room that does not exist
+            System.out.println("Cannot update a room that does not exist");
             return null;
         }
 
@@ -66,7 +95,7 @@ public class RoomService
 
         if(roomToDelete == null || roomToDelete.isDeleted())
         {
-            // Error handling, cannot update a room that does not exist
+            System.out.println("Cannot delete a room that does not exist");
             return null;
         }
 

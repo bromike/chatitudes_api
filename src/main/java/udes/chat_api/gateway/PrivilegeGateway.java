@@ -5,28 +5,29 @@ import org.springframework.stereotype.Service;
 import udes.chat_api.constants.PrivilegeType;
 import udes.chat_api.room_privileges.RoomPrivilege;
 import udes.chat_api.room_privileges.RoomPrivilegeRepository;
-import udes.chat_api.room_privileges.PrivilegeService;
+import udes.chat_api.room_privileges.RoomPrivilegeService;
+
+import java.util.Collections;
+import java.util.List;
 
 @Service
 public class PrivilegeGateway
 {
     @Autowired
-    private PrivilegeService privilegeService;
-    @Autowired
-    private RoomPrivilegeRepository roomPrivilegeRepository;
+    private RoomPrivilegeService roomPrivilegeService;
 
     public RoomPrivilege createOrUpdatePrivilege(RoomPrivilege roomPrivilege)
     {
         int roomId = roomPrivilege.getRoom().getRoomId();
-        // TODO: removed the hardcoded cip when merging with the CAS authentication
-        RoomPrivilege userPrivilegeLevel = roomPrivilegeRepository.findByUserCipAndRoomRoomId("stpe1704", roomId);
+        List<Integer> authorizedUser = Collections.singletonList(PrivilegeType.admin);
 
-        if(userPrivilegeLevel == null || userPrivilegeLevel.getType() < PrivilegeType.admin)
+        // TODO: removed the hardcoded cip when merging with the CAS authentication
+        if(!roomPrivilegeService.userHasRequiredPrivilege("stpe1704", authorizedUser, roomId))
         {
-            // The user does not have the required level of roomPrivilege
+            System.out.println("The user does not have the required privileges");
             return null;
         }
 
-        return privilegeService.createOrUpdatePrivilege(roomPrivilege);
+        return roomPrivilegeService.createOrUpdatePrivilege(roomPrivilege);
     }
 }
