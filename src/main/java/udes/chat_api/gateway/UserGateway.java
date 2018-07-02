@@ -16,8 +16,8 @@ public class UserGateway
 
     public List<User> getUsers()
     {
-        // Check privileges
-        // Return privilege error if the user does not have the required privileges
+        // Check room_privileges
+        // Return privilege error if the user does not have the required room_privileges
 
         return userService.getUsers();
     }

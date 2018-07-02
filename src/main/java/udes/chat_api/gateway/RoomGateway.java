@@ -20,8 +20,8 @@ public class RoomGateway
 
     public Room createRoom(Room room)
     {
-        // Check privileges
-        // Return privilege error if the user does not have the required privileges
+        // Check room_privileges
+        // Return privilege error if the user does not have the required room_privileges
 
         return roomService.createRoom(room);
     }

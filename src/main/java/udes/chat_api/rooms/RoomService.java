@@ -2,6 +2,10 @@ package udes.chat_api.rooms;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import udes.chat_api.constants.PrivilegeType;
+import udes.chat_api.room_privileges.RoomPrivilege;
+import udes.chat_api.room_privileges.RoomPrivilegeRepository;
+import udes.chat_api.users.UserRepository;
 
 import java.util.List;
 
@@ -10,6 +14,10 @@ public class RoomService
 {
     @Autowired
     private RoomRepository roomRepository;
+    @Autowired
+    private RoomPrivilegeRepository roomPrivilegeRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     public List<Room> getRooms()
     {
@@ -18,7 +26,15 @@ public class RoomService
 
     public Room createRoom(Room room)
     {
-        return roomRepository.save(room);
+        RoomPrivilege roomPrivilege = new RoomPrivilege();
+        roomPrivilege.setUser(userRepository.findByCip("stpe1704"));  // TODO: use the user doing the call
+        roomPrivilege.setRoom(room);
+        roomPrivilege.setType(PrivilegeType.admin);
+
+        roomRepository.save(room);
+        roomPrivilegeRepository.save(roomPrivilege);
+
+        return room;
     }
 
     public Room getRoom(int roomId)
