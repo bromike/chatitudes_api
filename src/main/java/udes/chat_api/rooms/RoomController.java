@@ -26,6 +26,7 @@ public class RoomController
                 .collect(Collectors.toList());          //TODO: needed?
     }
 
+    // TODO: implement user privileges -> Only a certain type of user can create room
     @PostMapping("/room")
     public RoomDto createRoom(@RequestBody RoomDto roomDto)
     {
