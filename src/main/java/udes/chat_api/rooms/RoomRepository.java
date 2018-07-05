@@ -14,7 +14,11 @@ public interface RoomRepository extends CrudRepository<Room, Long>
 
     List<Room> findByIsDeletedFalse();
 
+    List<Room> findByIsDeletedFalseAndIsPublicTrue();
+
     Room findByRoomIdAndIsDeletedFalse(int roomId);
+
+    Room findByRoomIdAndIsDeletedFalseAndIsPublicFalse(int roomId);
 
     List<Room> findByNameContainingAndIsDeletedFalse(String name);
 

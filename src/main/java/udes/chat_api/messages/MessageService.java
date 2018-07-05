@@ -18,8 +18,6 @@ public class MessageService
 
     public Message createMessage(Message message)
     {
-        System.out.print(message.getMessageId());
-
         return messageRepository.save(message);
     }
 
