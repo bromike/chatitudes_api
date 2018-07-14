@@ -3,6 +3,8 @@ package udes.chat_api.privileges;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import udes.chat_api.constants.RoomPrivilegeTypes;
+import udes.chat_api.gateway.MainGateway;
+import udes.chat_api.users.User;
 
 import java.util.List;
 
@@ -13,6 +15,8 @@ public class PrivilegeService
     private RoomPrivilegeRepository roomPrivilegeRepository;
     @Autowired
     private ChannelPrivilegeRepository channelPrivilegeRepository;
+    @Autowired
+    private MainGateway mainGateway;
 
     public List<RoomPrivilege> getRoomPrivileges(int roomId)
     {
@@ -43,8 +47,9 @@ public class PrivilegeService
         return channelPrivilegeRepository.save(channelPrivilege);
     }
 
-    public boolean userHasRequiredPrivilege(String userCip, List<Integer> authorizedPrivilegeLevel, int roomId)
+    public boolean userHasRequiredPrivilege(List<Integer> authorizedPrivilegeLevel, int roomId)
     {
+        String userCip = mainGateway.getUserFromSecurity().getCip();
         RoomPrivilege userPrivilege = roomPrivilegeRepository.findByUserCipAndRoomRoomId(userCip, roomId);
 
         return (userPrivilege != null && authorizedPrivilegeLevel.contains(userPrivilege.getType()));

@@ -7,6 +7,7 @@ import udes.chat_api.constants.RoomPrivilegeTypes;
 import udes.chat_api.messages.Message;
 import udes.chat_api.messages.MessageService;
 import udes.chat_api.privileges.PrivilegeService;
+import udes.chat_api.rooms.Room;
 import udes.chat_api.users.User;
 
 import java.util.Arrays;
@@ -29,13 +30,10 @@ public class MessageGateway
 
     public Message createMessage(Message message)
     {
-        User user = mainGateway.getUserFromSecurity();
-        int roomId = message.getChannel().getRoom().getRoomId();
-        List<Integer> authorizedUser = Arrays.asList(RoomPrivilegeTypes.admin, RoomPrivilegeTypes.moderator);
+        Room room = message.getChannel().getRoom();
 
-        if(message.getChannel().getType() == ChannelTypes.restricted && !privilegeService.userHasRequiredPrivilege(user.getCip(), authorizedUser, roomId))
+        if(!mainGateway.isAdminOrModerator(room))
         {
-            System.out.println("You need to be an admin or a moderator to write in a restricted channel");
             return null;
         }
 

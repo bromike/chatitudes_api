@@ -61,14 +61,13 @@ public class RoomService
 
     public Room getRoom(int roomId)
     {
-        User user = mainGateway.getUserFromSecurity();
         Room room = roomRepository.findByRoomIdAndIsDeletedFalse(roomId);
 
         if(!room.isPublic())
         {
             List<Integer> authorizedUser = Arrays.asList(RoomPrivilegeTypes.admin, RoomPrivilegeTypes.moderator, RoomPrivilegeTypes.member);
 
-            if(!privilegeService.userHasRequiredPrivilege(user.getCip(), authorizedUser, room.getRoomId()))
+            if(!privilegeService.userHasRequiredPrivilege(authorizedUser, room.getRoomId()))
             {
                 return null;
             }

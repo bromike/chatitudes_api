@@ -3,6 +3,7 @@ package udes.chat_api.gateway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import udes.chat_api.channels.Channel;
+import udes.chat_api.channels.ChannelRepository;
 import udes.chat_api.channels.ChannelService;
 
 import java.util.List;
@@ -12,6 +13,10 @@ public class ChannelGateway
 {
     @Autowired
     private ChannelService channelService;
+    @Autowired
+    private MainGateway mainGateway;
+    @Autowired
+    private ChannelRepository channelRepository;
 
     public List<Channel> getChannelsByRoomId(int channelId)
     {
@@ -20,8 +25,10 @@ public class ChannelGateway
 
     public Channel createChannel(Channel channel)
     {
-        // Check privileges
-        // Return privilege error if the user does not have the required privileges
+        if(!mainGateway.isAdminOrModerator(channel.getRoom()))
+        {
+            return null;
+        }
 
         return channelService.createChannel(channel);
     }
@@ -38,11 +45,23 @@ public class ChannelGateway
 
     public Channel updateChannel(Channel channel)
     {
+        if(!mainGateway.isAdminOrModerator(channel.getRoom()))
+        {
+            return null;
+        }
+
         return channelService.updateChannel(channel);
     }
 
     public Channel deleteChannel(int channelId)
     {
+        Channel channel = channelRepository.findByChannelIdAndIsDeletedFalse(channelId);
+
+        if(!mainGateway.isAdminOrModerator(channel.getRoom()))
+        {
+            return null;
+        }
+
         return channelService.deleteChannel(channelId);
     }
 }

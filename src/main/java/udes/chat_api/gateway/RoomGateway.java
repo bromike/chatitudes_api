@@ -47,12 +47,8 @@ public class RoomGateway
 
     public Room updateRoom(Room room)
     {
-        User user = mainGateway.getUserFromSecurity();
-        List<Integer> authorizedUser = Arrays.asList(RoomPrivilegeTypes.admin, RoomPrivilegeTypes.moderator);
-
-        if(!privilegeService.userHasRequiredPrivilege(user.getCip(), authorizedUser, room.getRoomId()))
+        if(!mainGateway.isAdminOrModerator(room))
         {
-            System.out.println("The user does not have the required privileges");
             return null;
         }
 
@@ -61,10 +57,9 @@ public class RoomGateway
 
     public Room deleteRoom(int roomId)
     {
-        User user = mainGateway.getUserFromSecurity();
         List<Integer> authorizedUser = Collections.singletonList(RoomPrivilegeTypes.admin);
 
-        if(!privilegeService.userHasRequiredPrivilege(user.getCip(), authorizedUser, roomId))
+        if(!privilegeService.userHasRequiredPrivilege(authorizedUser, roomId))
         {
             System.out.println("The user does not have the required privileges");
             return null;
