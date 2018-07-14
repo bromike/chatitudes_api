@@ -2,10 +2,8 @@ package udes.chat_api.gateway;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import udes.chat_api.constants.PrivilegeType;
-import udes.chat_api.room_privileges.RoomPrivilege;
-import udes.chat_api.room_privileges.RoomPrivilegeRepository;
-import udes.chat_api.room_privileges.RoomPrivilegeService;
+import udes.chat_api.constants.RoomPrivilegeTypes;
+import udes.chat_api.privileges.PrivilegeService;
 import udes.chat_api.rooms.Room;
 import udes.chat_api.rooms.RoomService;
 import udes.chat_api.users.User;
@@ -18,7 +16,7 @@ import java.util.List;
 public class RoomGateway
 {
     @Autowired
-    private RoomPrivilegeService roomPrivilegeService;
+    private PrivilegeService privilegeService;
     @Autowired
     private RoomService roomService;
     @Autowired
@@ -31,8 +29,8 @@ public class RoomGateway
 
     public Room createRoom(Room room)
     {
-        // Check room_privileges
-        // Return privilege error if the user does not have the required room_privileges
+        // Check privileges
+        // Return privilege error if the user does not have the required privileges
 
         return roomService.createRoom(room);
     }
@@ -50,9 +48,9 @@ public class RoomGateway
     public Room updateRoom(Room room)
     {
         User user = mainGateway.getUserFromSecurity();
-        List<Integer> authorizedUser = Arrays.asList(PrivilegeType.admin, PrivilegeType.moderator);
+        List<Integer> authorizedUser = Arrays.asList(RoomPrivilegeTypes.admin, RoomPrivilegeTypes.moderator);
 
-        if(!roomPrivilegeService.userHasRequiredPrivilege(user.getCip(), authorizedUser, room.getRoomId()))
+        if(!privilegeService.userHasRequiredPrivilege(user.getCip(), authorizedUser, room.getRoomId()))
         {
             System.out.println("The user does not have the required privileges");
             return null;
@@ -64,9 +62,9 @@ public class RoomGateway
     public Room deleteRoom(int roomId)
     {
         User user = mainGateway.getUserFromSecurity();
-        List<Integer> authorizedUser = Collections.singletonList(PrivilegeType.admin);
+        List<Integer> authorizedUser = Collections.singletonList(RoomPrivilegeTypes.admin);
 
-        if(!roomPrivilegeService.userHasRequiredPrivilege(user.getCip(), authorizedUser, roomId))
+        if(!privilegeService.userHasRequiredPrivilege(user.getCip(), authorizedUser, roomId))
         {
             System.out.println("The user does not have the required privileges");
             return null;

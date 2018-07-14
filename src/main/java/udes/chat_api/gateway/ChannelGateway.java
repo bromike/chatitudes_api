@@ -20,8 +20,8 @@ public class ChannelGateway
 
     public Channel createChannel(Channel channel)
     {
-        // Check room_privileges
-        // Return privilege error if the user does not have the required room_privileges
+        // Check privileges
+        // Return privilege error if the user does not have the required privileges
 
         return channelService.createChannel(channel);
     }

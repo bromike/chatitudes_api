@@ -2,11 +2,11 @@ package udes.chat_api.rooms;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import udes.chat_api.constants.PrivilegeType;
+import udes.chat_api.constants.RoomPrivilegeTypes;
 import udes.chat_api.gateway.MainGateway;
-import udes.chat_api.room_privileges.RoomPrivilege;
-import udes.chat_api.room_privileges.RoomPrivilegeRepository;
-import udes.chat_api.room_privileges.RoomPrivilegeService;
+import udes.chat_api.privileges.RoomPrivilege;
+import udes.chat_api.privileges.RoomPrivilegeRepository;
+import udes.chat_api.privileges.PrivilegeService;
 import udes.chat_api.users.User;
 
 import java.util.Arrays;
@@ -20,7 +20,7 @@ public class RoomService
     @Autowired
     private RoomPrivilegeRepository roomPrivilegeRepository;
     @Autowired
-    private RoomPrivilegeService roomPrivilegeService;
+    private PrivilegeService privilegeService;
     @Autowired
     private MainGateway mainGateway;
 
@@ -51,7 +51,7 @@ public class RoomService
         RoomPrivilege roomPrivilege = new RoomPrivilege();
         roomPrivilege.setUser(user);
         roomPrivilege.setRoom(room);
-        roomPrivilege.setType(PrivilegeType.admin);
+        roomPrivilege.setType(RoomPrivilegeTypes.admin);
 
         roomRepository.save(room);
         roomPrivilegeRepository.save(roomPrivilege);
@@ -66,9 +66,9 @@ public class RoomService
 
         if(!room.isPublic())
         {
-            List<Integer> authorizedUser = Arrays.asList(PrivilegeType.admin, PrivilegeType.moderator, PrivilegeType.member);
+            List<Integer> authorizedUser = Arrays.asList(RoomPrivilegeTypes.admin, RoomPrivilegeTypes.moderator, RoomPrivilegeTypes.member);
 
-            if(!roomPrivilegeService.userHasRequiredPrivilege(user.getCip(), authorizedUser, room.getRoomId()))
+            if(!privilegeService.userHasRequiredPrivilege(user.getCip(), authorizedUser, room.getRoomId()))
             {
                 return null;
             }

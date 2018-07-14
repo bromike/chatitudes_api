@@ -1,7 +1,8 @@
-package udes.chat_api.room_privileges;
+package udes.chat_api.privileges;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import udes.chat_api.channels.ChannelRepository;
 import udes.chat_api.rooms.RoomRepository;
 import udes.chat_api.users.UserRepository;
 
@@ -14,6 +15,10 @@ public class PrivilegeAdapter
     private RoomRepository roomRepository;
     @Autowired
     private RoomPrivilegeRepository roomPrivilegeRepository;
+    @Autowired
+    private ChannelRepository channelRepository;
+    @Autowired
+    private ChannelPrivilegeRepository channelPrivilegeRepository;
 
     public RoomPrivilegeDto toDto(RoomPrivilege roomPrivilege)
     {
@@ -45,5 +50,37 @@ public class PrivilegeAdapter
         roomPrivilege.setType(roomPrivilegeDto.getType());
 
         return roomPrivilege;
+    }
+
+    public ChannelPrivilegeDto toDto(ChannelPrivilege channelPrivilege)
+    {
+        ChannelPrivilegeDto channelPrivilegeDto = new ChannelPrivilegeDto();
+
+        channelPrivilegeDto.setUserCip(channelPrivilege.getUser().getCip());
+
+        channelPrivilegeDto.setChannelId(channelPrivilege.getChannel().getChannelId());
+
+        channelPrivilegeDto.setType(channelPrivilege.getType());
+
+        return channelPrivilegeDto;
+    }
+
+    public ChannelPrivilege toEntity(ChannelPrivilegeDto channelPrivilegeDto)
+    {
+        ChannelPrivilege existingChannelPrivilege = channelPrivilegeRepository.findByUserCipAndChannelChannelId(channelPrivilegeDto.getUserCip(), channelPrivilegeDto.getChannelId());
+
+        if(existingChannelPrivilege != null)
+        {
+            existingChannelPrivilege.setType(channelPrivilegeDto.getType());
+            return existingChannelPrivilege;
+        }
+
+        ChannelPrivilege channelPrivilege = new ChannelPrivilege();
+
+        channelPrivilege.setUser(userRepository.findByCip(channelPrivilegeDto.getUserCip()));
+        channelPrivilege.setChannel(channelRepository.findByChannelIdAndIsDeletedFalse(channelPrivilegeDto.getChannelId()));
+        channelPrivilege.setType(channelPrivilegeDto.getType());
+
+        return channelPrivilege;
     }
 }
