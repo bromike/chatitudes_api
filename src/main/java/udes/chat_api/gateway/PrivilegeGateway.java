@@ -9,6 +9,7 @@ import udes.chat_api.room_privileges.RoomPrivilegeRepository;
 import udes.chat_api.room_privileges.RoomPrivilegeService;
 import udes.chat_api.users.User;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -20,13 +21,26 @@ public class PrivilegeGateway
     @Autowired
     private MainGateway mainGateway;
 
+    public List<RoomPrivilege> getPrivileges(int roomId)
+    {
+        User user = mainGateway.getUserFromSecurity();
+        List<Integer> authorizedUser = Arrays.asList(PrivilegeType.admin, PrivilegeType.moderator);
+
+        if(!roomPrivilegeService.userHasRequiredPrivilege(user.getCip(), authorizedUser, roomId))
+        {
+            System.out.println("The user does not have the required privileges");
+            return null;
+        }
+
+        return roomPrivilegeService.getPrivileges(roomId);
+    }
+
     public RoomPrivilege createOrUpdatePrivilege(RoomPrivilege roomPrivilege)
     {
         User user = mainGateway.getUserFromSecurity();
         int roomId = roomPrivilege.getRoom().getRoomId();
         List<Integer> authorizedUser = Collections.singletonList(PrivilegeType.admin);
 
-        // TODO: removed the hardcoded cip when merging with the CAS authentication
         if(!roomPrivilegeService.userHasRequiredPrivilege(user.getCip(), authorizedUser, roomId))
         {
             System.out.println("The user does not have the required privileges");

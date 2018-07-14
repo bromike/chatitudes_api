@@ -1,5 +1,6 @@
 package udes.chat_api.messages;
 
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,8 @@ public class MessageService
 
     public Message createMessage(Message message)
     {
+        message.setTime(DateTime.now());
+
         return messageRepository.save(message);
     }
 

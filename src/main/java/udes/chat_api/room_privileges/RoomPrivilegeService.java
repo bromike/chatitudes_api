@@ -12,6 +12,11 @@ public class RoomPrivilegeService
     @Autowired
     private RoomPrivilegeRepository roomPrivilegeRepository;
 
+    public List<RoomPrivilege> getPrivileges(int roomId)
+    {
+        return roomPrivilegeRepository.findByRoomRoomId(roomId);
+    }
+
     public RoomPrivilege createOrUpdatePrivilege(RoomPrivilege roomPrivilege)
     {
         List<RoomPrivilege> admins = roomPrivilegeRepository.findByRoomRoomIdAndType(roomPrivilege.getRoom().getRoomId(), PrivilegeType.admin);

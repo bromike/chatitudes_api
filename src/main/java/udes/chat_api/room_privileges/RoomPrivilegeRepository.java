@@ -14,6 +14,8 @@ public interface RoomPrivilegeRepository extends CrudRepository<RoomPrivilege, L
 
     List<RoomPrivilege> findByUserCip(String cip);
 
+    List<RoomPrivilege> findByRoomRoomId(int roomId);
+
     List<RoomPrivilege> findByRoomRoomIdAndType(int roomId, int type);
 
     RoomPrivilege findByUserCipAndRoomRoomId(String cip, int roomId);
