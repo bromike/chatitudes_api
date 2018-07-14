@@ -37,6 +37,7 @@ public class PrivilegeAdapter
     {
         RoomPrivilege existingRoomPrivilege = roomPrivilegeRepository.findByUserCipAndRoomRoomId(roomPrivilegeDto.getUserCip(), roomPrivilegeDto.getRoomId());
 
+        // TODO: update the entity before processing, not good.
         if(existingRoomPrivilege != null)
         {
             existingRoomPrivilege.setType(roomPrivilegeDto.getType());
