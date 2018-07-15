@@ -2,13 +2,10 @@ package udes.chat_api.channels;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sun.applet.Main;
 import udes.chat_api.constants.ChannelPrivilegeTypes;
-import udes.chat_api.constants.RoomPrivilegeTypes;
 import udes.chat_api.gateway.MainGateway;
 import udes.chat_api.privileges.ChannelPrivilege;
 import udes.chat_api.privileges.ChannelPrivilegeRepository;
-import udes.chat_api.privileges.RoomPrivilege;
 import udes.chat_api.users.User;
 
 import java.util.List;
@@ -25,7 +22,23 @@ public class ChannelService
 
     public List<Channel> getChannelsByRoomId(int roomId)
     {
-        return channelRepository.findByIsDeletedFalseAndRoomRoomIdOrderByNameAsc(roomId);
+        User user = mainGateway.getUserFromSecurity();
+
+        List<Channel> channels = channelRepository.findByIsDeletedFalseAndIsPublicTrueAndRoomRoomId(roomId);
+        List<ChannelPrivilege> channelPrivileges = channelPrivilegeRepository.findByUserCip(user.getCip());
+
+        for(ChannelPrivilege channelPrivilege : channelPrivileges)
+        {
+            int channelRoomId = channelPrivilege.getChannel().getRoom().getRoomId();
+            Channel privateChannel = channelRepository.findByIsDeletedFalseAndIsPublicFalseAndChannelId(channelRoomId);
+
+            if(privateChannel != null)
+            {
+                channels.add(privateChannel);
+            }
+        }
+
+        return channels;
     }
 
     public Channel createChannel(Channel channel)
@@ -59,7 +72,7 @@ public class ChannelService
 
         if(channelToUpdate == null)
         {
-            // Error handling, cannot update a channel that does not exist
+            System.out.println("Cannot update a channel that does not exist");
             return null;
         }
 
@@ -72,7 +85,7 @@ public class ChannelService
 
         if(channelToDelete == null || channelToDelete.isDeleted())
         {
-            // Error handling, cannot delete a channel that does not exist or is already deleted
+            System.out.println("Cannot delete a channel that does not exist");
             return null;
         }
 

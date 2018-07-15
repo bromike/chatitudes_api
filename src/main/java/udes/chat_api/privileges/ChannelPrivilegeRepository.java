@@ -16,7 +16,7 @@ public interface ChannelPrivilegeRepository extends CrudRepository<ChannelPrivil
 
     List<ChannelPrivilege> findByChannelChannelId(int channelId);
 
-    List<ChannelPrivilege> findByChannelChannelIdAndType(int roomId, int type);
+    List<ChannelPrivilege> findByChannelChannelIdAndType(int channelId, int type);
 
-    ChannelPrivilege findByUserCipAndChannelChannelId(String cip, int roomId);
+    ChannelPrivilege findByUserCipAndChannelChannelId(String cip, int channelId);
 }

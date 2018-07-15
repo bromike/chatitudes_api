@@ -23,7 +23,7 @@ public class MessageController
 
         return messages.stream()
                 .map(message -> messageAdapter.toDto(message))
-                .collect(Collectors.toList());          //TODO: needed?
+                .collect(Collectors.toList());
     }
 
     @PostMapping("/message")

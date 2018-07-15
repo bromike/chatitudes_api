@@ -12,20 +12,33 @@ public class MessageAdapter
 
     public MessageDto toDto(Message message)
     {
+        if(message == null)
+        {
+            return null;
+        }
 
         MessageDto messageDto = new MessageDto();
 
         messageDto.setContent(message.getContent());
         messageDto.setMessageId(message.getMessageId());
         messageDto.setTime(message.getTime());
-        messageDto.setChannelId(message.getChannel().getChannelId());
         messageDto.setAuthor(message.getAuthor());
+
+        if(message.getChannel() != null)
+        {
+            messageDto.setChannelId(message.getChannel().getChannelId());
+        }
 
         return messageDto;
     }
 
     public Message toEntity(MessageDto messageDto)
     {
+        if(messageDto == null)
+        {
+            return null;
+        }
+
         Message message = new Message();
 
         message.setMessageId(messageDto.getMessageId());

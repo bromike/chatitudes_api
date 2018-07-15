@@ -24,36 +24,33 @@ public class MessageService
         return messageRepository.save(message);
     }
 
-    public Message getMessage(int messageId)
-    {
-        return messageRepository.findByMessageIdAndIsDeletedFalse(messageId);
-    }
-
     public Message updateMessage(Message message)
     {
         Message messageToUpdate = messageRepository.findByMessageIdAndIsDeletedFalse(message.getMessageId());
 
         if(messageToUpdate == null)
         {
-            // Error handling, cannot update a message that does not exist
-            return null;
+            System.out.println("The message you are trying to update does not exist");
+            return new Message();
         }
 
         return messageRepository.save(message);
     }
 
-    public Message deleteMessage(int messageId)
+    public Message deleteMessage(Message message)
     {
-        Message messageToDelete = messageRepository.findByMessageIdAndIsDeletedFalse(messageId);
-
-        if(messageToDelete == null || messageToDelete.isDeleted())
+        if(message == null || message.isDeleted())
         {
-            // Error handling, cannot delete a message that does not exist
-            return null;
+            System.out.println("The message you are trying to delete does not exist or is already deleted");
+            return new Message();
         }
 
-        messageToDelete.setDeleted(true);
+        message.setDeleted(true);
+        return messageRepository.save(message);
+    }
 
-        return messageRepository.save(messageToDelete);
+    public Message getMessage(int messageId)
+    {
+        return messageRepository.findByMessageId(messageId);
     }
 }

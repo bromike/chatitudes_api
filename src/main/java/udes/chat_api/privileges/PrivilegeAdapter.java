@@ -22,6 +22,11 @@ public class PrivilegeAdapter
 
     public RoomPrivilegeDto toDto(RoomPrivilege roomPrivilege)
     {
+        if(roomPrivilege == null)
+        {
+            return null;
+        }
+
         RoomPrivilegeDto roomPrivilegeDto = new RoomPrivilegeDto();
 
         roomPrivilegeDto.setUserCip(roomPrivilege.getUser().getCip());
@@ -35,6 +40,11 @@ public class PrivilegeAdapter
 
     public RoomPrivilege toEntity(RoomPrivilegeDto roomPrivilegeDto)
     {
+        if(roomPrivilegeDto == null)
+        {
+            return null;
+        }
+
         RoomPrivilege existingRoomPrivilege = roomPrivilegeRepository.findByUserCipAndRoomRoomId(roomPrivilegeDto.getUserCip(), roomPrivilegeDto.getRoomId());
 
         // TODO: update the entity before processing, not good.
@@ -55,6 +65,11 @@ public class PrivilegeAdapter
 
     public ChannelPrivilegeDto toDto(ChannelPrivilege channelPrivilege)
     {
+        if(channelPrivilege == null)
+        {
+            return null;
+        }
+
         ChannelPrivilegeDto channelPrivilegeDto = new ChannelPrivilegeDto();
 
         channelPrivilegeDto.setUserCip(channelPrivilege.getUser().getCip());
@@ -68,6 +83,11 @@ public class PrivilegeAdapter
 
     public ChannelPrivilege toEntity(ChannelPrivilegeDto channelPrivilegeDto)
     {
+        if(channelPrivilegeDto == null)
+        {
+            return null;
+        }
+
         ChannelPrivilege existingChannelPrivilege = channelPrivilegeRepository.findByUserCipAndChannelChannelId(channelPrivilegeDto.getUserCip(), channelPrivilegeDto.getChannelId());
 
         if(existingChannelPrivilege != null)

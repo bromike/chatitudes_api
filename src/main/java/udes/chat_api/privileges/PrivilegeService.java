@@ -49,9 +49,24 @@ public class PrivilegeService
 
     public boolean userHasRequiredPrivilege(List<Integer> authorizedPrivilegeLevel, int roomId)
     {
-        String userCip = mainGateway.getUserFromSecurity().getCip();
-        RoomPrivilege userPrivilege = roomPrivilegeRepository.findByUserCipAndRoomRoomId(userCip, roomId);
+        User user = mainGateway.getUserFromSecurity();
+        RoomPrivilege userPrivilege = roomPrivilegeRepository.findByUserCipAndRoomRoomId(user.getCip(), roomId);
 
         return (userPrivilege != null && authorizedPrivilegeLevel.contains(userPrivilege.getType()));
+    }
+
+    public boolean userIsMemberOfRoom(int roomId)
+    {
+        User user = mainGateway.getUserFromSecurity();
+        RoomPrivilege roomPrivilege = roomPrivilegeRepository.findByUserCipAndRoomRoomId(user.getCip(), roomId);
+
+        return roomPrivilege != null;
+    }
+
+    public ChannelPrivilege getUserChannelPrivilege(int channelId)
+    {
+        User user = mainGateway.getUserFromSecurity();
+
+        return channelPrivilegeRepository.findByUserCipAndChannelChannelId(user.getCip(), channelId);
     }
 }

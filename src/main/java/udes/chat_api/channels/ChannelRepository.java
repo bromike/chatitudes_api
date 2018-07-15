@@ -18,6 +18,9 @@ public interface ChannelRepository extends CrudRepository<Channel, Long>
 
     List<Channel> findByIsDeletedFalseAndRoomRoomIdOrderByNameAsc(int roomId);
 
+    List<Channel> findByIsDeletedFalseAndIsPublicTrueAndRoomRoomId(int roomId);
+    Channel findByIsDeletedFalseAndIsPublicFalseAndChannelId(int channelId);
+
     @Transactional
     void deleteChannelByChannelId(int channelId);
 }
