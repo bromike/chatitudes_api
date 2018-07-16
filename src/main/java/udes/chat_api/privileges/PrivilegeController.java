@@ -19,13 +19,13 @@ public class PrivilegeController
     private PrivilegeGateway privilegeGateway;
 
     @GetMapping("/roomprivilege/{roomId}")
-    public List<RoomPrivilegeDto> getRoomPrivileges(@PathVariable("roomId") int roomId)
+    public ResponseEntity getRoomPrivileges(@PathVariable("roomId") int roomId)
     {
         List<RoomPrivilege> privileges = privilegeGateway.getRoomPrivileges(roomId);
 
-        return privileges.stream()
+        return ResponseEntity.status(HttpStatus.OK).body(privileges.stream()
                 .map(privilege -> privilegeAdapter.toDto(privilege))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
     @PostMapping("/roomprivilege")
@@ -40,17 +40,17 @@ public class PrivilegeController
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Room privilege creation failed");
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(roomPrivilegeCreated);
+        return ResponseEntity.status(HttpStatus.OK).body(privilegeAdapter.toDto(roomPrivilegeCreated));
     }
 
     @GetMapping("/channelprivilege/{channelId}")
-    public List<ChannelPrivilegeDto> getChannelPrivileges(@PathVariable("channelId") int channelId)
+    public ResponseEntity getChannelPrivileges(@PathVariable("channelId") int channelId)
     {
         List<ChannelPrivilege> privileges = privilegeGateway.getChannelPrivileges(channelId);
 
-        return privileges.stream()
+        return ResponseEntity.status(HttpStatus.OK).body(privileges.stream()
                 .map(privilege -> privilegeAdapter.toDto(privilege))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
     @PostMapping("/channelprivilege")
@@ -65,7 +65,7 @@ public class PrivilegeController
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Channel privilege creation failed");
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(channelPrivilegeCreated);
+        return ResponseEntity.status(HttpStatus.OK).body(privilegeAdapter.toDto(channelPrivilegeCreated));
     }
 
     @DeleteMapping("/roomprivilege/{roomId}/{userCip}")

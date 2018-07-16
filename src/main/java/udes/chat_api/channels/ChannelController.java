@@ -40,7 +40,7 @@ public class ChannelController
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Channel creation failed");
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(channelCreated);
+        return ResponseEntity.status(HttpStatus.OK).body(channelAdapter.toDto(channelCreated));
     }
 
     @PutMapping("/channel")
@@ -55,7 +55,7 @@ public class ChannelController
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Channel update failed");
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(updatedChannel);
+        return ResponseEntity.status(HttpStatus.OK).body(channelAdapter.toDto(updatedChannel));
     }
 
     @DeleteMapping("/channel/{id}")
@@ -68,6 +68,6 @@ public class ChannelController
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Channel deletion failed");
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(channel);
+        return ResponseEntity.status(HttpStatus.OK).body(channelAdapter.toDto(channel));
     }
 }

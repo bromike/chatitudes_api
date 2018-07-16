@@ -19,13 +19,13 @@ public class RoomController
     private RoomAdapter roomAdapter;
 
     @GetMapping("/room")
-    public List<RoomDto> getRooms()
+    public ResponseEntity getRooms()
     {
         List<Room> rooms = roomGateway.getRooms();
 
-        return rooms.stream()
+        return ResponseEntity.status(HttpStatus.OK).body(rooms.stream()
                 .map(room -> roomAdapter.toDto(room))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
     // TODO: implement user privileges -> Only a certain type of user can create room
@@ -60,21 +60,26 @@ public class RoomController
     }
 
     @PostMapping("/room/search")
-    public List<RoomDto> searchRoom(@RequestBody String query)
+    public ResponseEntity searchRoom(@RequestBody String query)
     {
         List<Room> rooms = roomGateway.searchRoom(query);
 
-        return rooms.stream()
+        return ResponseEntity.status(HttpStatus.OK).body(rooms.stream()
                 .map(room -> roomAdapter.toDto(room))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
     @GetMapping("/room/{id}")
-    public RoomDto getRoom(@PathVariable("id") int roomId)
+    public ResponseEntity getRoom(@PathVariable("id") int roomId)
     {
         Room room = roomGateway.getRoom(roomId);
 
-        return roomAdapter.toDto(room);
+        if(room == null || room.getRoomId() == null)
+        {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Room get failed");
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(roomAdapter.toDto(room));
     }
 
     @DeleteMapping("/room/{id}")

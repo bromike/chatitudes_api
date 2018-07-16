@@ -19,13 +19,13 @@ public class MessageController
     private MessageAdapter messageAdapter;
 
     @GetMapping("/message")
-    public List<MessageDto> getMessagesByChannelId(@RequestParam int channelId)
+    public ResponseEntity getMessagesByChannelId(@RequestParam int channelId)
     {
         List<Message> messages = messageGateway.getMessagesByChannelId(channelId);
 
-        return messages.stream()
+        return ResponseEntity.status(HttpStatus.OK).body(messages.stream()
                 .map(message -> messageAdapter.toDto(message))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
     @PostMapping("/message")
@@ -40,7 +40,7 @@ public class MessageController
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Message creation failed");
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(messageCreated);
+        return ResponseEntity.status(HttpStatus.OK).body(messageAdapter.toDto(messageCreated));
     }
 
     @PutMapping("/message")
@@ -55,7 +55,7 @@ public class MessageController
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Message update failed");
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(updatedMessage);
+        return ResponseEntity.status(HttpStatus.OK).body(messageAdapter.toDto(updatedMessage));
     }
 
     @GetMapping("/message/{id}")
@@ -68,7 +68,7 @@ public class MessageController
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Message get failed");
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(message);
+        return ResponseEntity.status(HttpStatus.OK).body(messageAdapter.toDto(message));
     }
 
     @DeleteMapping("/message/{id}")
@@ -81,6 +81,6 @@ public class MessageController
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Message deletion failed");
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(message);
+        return ResponseEntity.status(HttpStatus.OK).body(messageAdapter.toDto(message));
     }
 }
