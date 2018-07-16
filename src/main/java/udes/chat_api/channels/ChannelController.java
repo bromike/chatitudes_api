@@ -23,7 +23,7 @@ public class ChannelController
 
         return channels.stream()
                 .map(channel -> channelAdapter.toDto(channel))
-                .collect(Collectors.toList());          //TODO: needed?
+                .collect(Collectors.toList());
     }
 
     @PostMapping("/channel")
@@ -44,24 +44,6 @@ public class ChannelController
         Channel updatedChannel = channelGateway.updateChannel(channel);
 
         return channelAdapter.toDto(updatedChannel);
-    }
-
-    @PostMapping("/channel/search")
-    public List<ChannelDto> searchChannel(@RequestBody String query)
-    {
-        List<Channel> channels = channelGateway.searchChannel(query);
-
-        return channels.stream()
-                .map(channel -> channelAdapter.toDto(channel))
-                .collect(Collectors.toList());
-    }
-
-    @GetMapping("/channel/{id}")
-    public ChannelDto getChannel(@PathVariable("id") int channelId)
-    {
-        Channel channel = channelGateway.getChannel(channelId);
-
-        return channelAdapter.toDto(channel);
     }
 
     @DeleteMapping("/channel/{id}")

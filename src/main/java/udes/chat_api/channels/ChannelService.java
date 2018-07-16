@@ -8,6 +8,7 @@ import udes.chat_api.privileges.ChannelPrivilege;
 import udes.chat_api.privileges.ChannelPrivilegeRepository;
 import udes.chat_api.users.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -24,21 +25,24 @@ public class ChannelService
     {
         User user = mainGateway.getUserFromSecurity();
 
-        List<Channel> channels = channelRepository.findByIsDeletedFalseAndIsPublicTrueAndRoomRoomId(roomId);
-        List<ChannelPrivilege> channelPrivileges = channelPrivilegeRepository.findByUserCip(user.getCip());
+        List<Channel> channels = channelRepository.findByIsDeletedFalseAndRoomRoomId(roomId);
+        List<Channel> authorizedChannels = new ArrayList<>();
 
-        for(ChannelPrivilege channelPrivilege : channelPrivileges)
+        for(Channel channel : channels)
         {
-            int channelRoomId = channelPrivilege.getChannel().getRoom().getRoomId();
-            Channel privateChannel = channelRepository.findByIsDeletedFalseAndIsPublicFalseAndChannelId(channelRoomId);
+            ChannelPrivilege channelPrivilege = channelPrivilegeRepository.findByUserCipAndChannelChannelId(user.getCip(), channel.getChannelId());
 
-            if(privateChannel != null)
+            if(channel.isPublic() && (channelPrivilege == null || channelPrivilege.getType() != ChannelPrivilegeTypes.banned))
             {
-                channels.add(privateChannel);
+                authorizedChannels.add(channel);
+            }
+            else if(!channel.isPublic() && (channelPrivilege != null && channelPrivilege.getType() != ChannelPrivilegeTypes.banned))
+            {
+                authorizedChannels.add(channel);
             }
         }
 
-        return channels;
+        return authorizedChannels;
     }
 
     public Channel createChannel(Channel channel)
@@ -54,16 +58,6 @@ public class ChannelService
         channelPrivilegeRepository.save(channelPrivilege);
 
         return channel;
-    }
-
-    public Channel getChannel(int channelId)
-    {
-        return channelRepository.findByChannelIdAndIsDeletedFalse(channelId);
-    }
-
-    public List<Channel> searchChannel(String query)
-    {
-        return channelRepository.findByNameContainingAndIsDeletedFalse(query);
     }
 
     public Channel updateChannel(Channel channel)

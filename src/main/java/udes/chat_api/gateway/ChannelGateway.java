@@ -33,16 +33,6 @@ public class ChannelGateway
         return channelService.createChannel(channel);
     }
 
-    public Channel getChannel(int channelId)
-    {
-        return channelService.getChannel(channelId);
-    }
-
-    public List<Channel> searchChannel(String query)
-    {
-        return channelService.searchChannel(query);
-    }
-
     public Channel updateChannel(Channel channel)
     {
         if(!mainGateway.isAdminOrModerator(channel.getRoom()))

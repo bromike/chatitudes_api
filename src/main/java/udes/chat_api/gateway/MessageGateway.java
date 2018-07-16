@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import udes.chat_api.channels.Channel;
 import udes.chat_api.constants.ChannelPrivilegeTypes;
+import udes.chat_api.constants.ChannelTypes;
 import udes.chat_api.messages.Message;
 import udes.chat_api.messages.MessageService;
 import udes.chat_api.privileges.ChannelPrivilege;
@@ -36,7 +37,12 @@ public class MessageGateway
         ChannelPrivilege channelPrivilege = privilegeService.getUserChannelPrivilege(channel.getChannelId());
         Room room = channel.getRoom();
 
-        if(channelPrivilege.getType() == ChannelPrivilegeTypes.muted || channelPrivilege.getType() == ChannelPrivilegeTypes.banned)
+        if(channel.getType() == ChannelTypes.restricted && !mainGateway.isAdminOrModerator(message.getChannel().getRoom()))
+        {
+            System.out.println("The user is trying to create a message in a restricted channel where he is not a moderator");
+            return null;
+        }
+        else if(channelPrivilege.getType() == ChannelPrivilegeTypes.muted || channelPrivilege.getType() == ChannelPrivilegeTypes.banned)
         {
             System.out.println("The user is trying to create a message in a channel where he is muted or banned");
             return null;
