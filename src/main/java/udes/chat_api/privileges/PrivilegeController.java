@@ -1,6 +1,8 @@
 package udes.chat_api.privileges;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import udes.chat_api.gateway.PrivilegeGateway;
 
@@ -27,13 +29,18 @@ public class PrivilegeController
     }
 
     @PostMapping("/roomprivilege")
-    public RoomPrivilegeDto createRoomPrivilege(@RequestBody RoomPrivilegeDto roomPrivilegeDto)
+    public ResponseEntity createRoomPrivilege(@RequestBody RoomPrivilegeDto roomPrivilegeDto)
     {
         RoomPrivilege roomPrivilege = privilegeAdapter.toEntity(roomPrivilegeDto);
 
         RoomPrivilege roomPrivilegeCreated = privilegeGateway.createOrUpdatePrivilege(roomPrivilege);
 
-        return privilegeAdapter.toDto(roomPrivilegeCreated);
+        if(roomPrivilegeCreated == null || roomPrivilegeCreated.getRoom() == null)
+        {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Room privilege creation failed");
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(roomPrivilegeCreated);
     }
 
     @GetMapping("/channelprivilege/{channelId}")
@@ -47,13 +54,18 @@ public class PrivilegeController
     }
 
     @PostMapping("/channelprivilege")
-    public ChannelPrivilegeDto createChannelPrivilege(@RequestBody ChannelPrivilegeDto channelPrivilegeDto)
+    public ResponseEntity createChannelPrivilege(@RequestBody ChannelPrivilegeDto channelPrivilegeDto)
     {
         ChannelPrivilege channelPrivilege = privilegeAdapter.toEntity(channelPrivilegeDto);
 
         ChannelPrivilege channelPrivilegeCreated = privilegeGateway.createOrUpdatePrivilege(channelPrivilege);
 
-        return privilegeAdapter.toDto(channelPrivilegeCreated);
+        if(channelPrivilegeCreated == null || channelPrivilegeCreated.getChannel() == null)
+        {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Channel privilege creation failed");
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(channelPrivilegeCreated);
     }
 
     @DeleteMapping("/roomprivilege/{roomId}/{userCip}")

@@ -71,15 +71,17 @@ public class PrivilegeService
 
     public void deleteRoomPrivilege(String userCip, int roomId)
     {
-        RoomPrivilege roomprivilege = roomPrivilegeRepository.findByUserCipAndRoomRoomId(userCip, roomId);
+        RoomPrivilege roomPrivilege = roomPrivilegeRepository.findByUserCipAndRoomRoomId(userCip, roomId);
 
-        if(roomprivilege == null)
+        List<RoomPrivilege> admins = roomPrivilegeRepository.findByRoomRoomIdAndType(roomPrivilege.getRoom().getRoomId(), RoomPrivilegeTypes.admin);
+
+        if(admins.size() == 1 && admins.get(0).getUser().getCip().equals(roomPrivilege.getUser().getCip()))
         {
-            System.out.println("Cannot delete a room privilege that does not exist");
+            System.out.println("Cannot delete the last admin of a room");
             return;
         }
 
-        roomPrivilegeRepository.delete(roomprivilege);
+        roomPrivilegeRepository.delete(roomPrivilege);
     }
 
     public void deleteChannelPrivilege(String userCip, int channelId)

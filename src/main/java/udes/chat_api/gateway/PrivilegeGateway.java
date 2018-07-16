@@ -98,6 +98,6 @@ public class PrivilegeGateway
             return;
         }
 
-        privilegeService.deleteRoomPrivilege(userCip, channelId);
+        privilegeService.deleteChannelPrivilege(userCip, channelId);
     }
 }
