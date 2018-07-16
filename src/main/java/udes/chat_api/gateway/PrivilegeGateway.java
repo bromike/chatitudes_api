@@ -2,6 +2,7 @@ package udes.chat_api.gateway;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import udes.chat_api.channels.Channel;
 import udes.chat_api.channels.ChannelRepository;
 import udes.chat_api.constants.RoomPrivilegeTypes;
 import udes.chat_api.privileges.ChannelPrivilege;
@@ -56,7 +57,7 @@ public class PrivilegeGateway
 
         if(!privilegeService.userHasRequiredPrivilege(authorizedUser, roomId))
         {
-            System.out.println("The user does not have the required privileges");
+            System.out.println("The user does not have the required privileges to create a room privilege");
             return null;
         }
 
@@ -69,9 +70,34 @@ public class PrivilegeGateway
 
         if(!mainGateway.isAdminOrModerator(room))
         {
+            System.out.println("The user does not have the required privileges to create a channel privilege");
             return null;
         }
 
         return privilegeService.createOrUpdatePrivilege(channelPrivilege);
+    }
+
+    public void deleteRoomPrivilege(String userCip, int roomId)
+    {
+        Room room = roomRepository.findByRoomIdAndIsDeletedFalse(roomId);
+
+        if(!mainGateway.isAdminOrModerator(room))
+        {
+            return;
+        }
+
+        privilegeService.deleteRoomPrivilege(userCip, roomId);
+    }
+
+    public void deleteChannelPrivilege(String userCip, int channelId)
+    {
+        Channel channel = channelRepository.findByChannelIdAndIsDeletedFalse(channelId);
+
+        if(!mainGateway.isAdminOrModerator(channel.getRoom()))
+        {
+            return;
+        }
+
+        privilegeService.deleteRoomPrivilege(userCip, channelId);
     }
 }

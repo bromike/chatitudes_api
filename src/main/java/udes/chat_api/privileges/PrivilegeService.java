@@ -32,7 +32,6 @@ public class PrivilegeService
     {
         List<RoomPrivilege> admins = roomPrivilegeRepository.findByRoomRoomIdAndType(roomPrivilege.getRoom().getRoomId(), RoomPrivilegeTypes.admin);
 
-        // TODO: possible to compare directly User together?
         if(admins.size() == 1 && admins.get(0).getUser().getCip().equals(roomPrivilege.getUser().getCip()))
         {
             System.out.println("Cannot change the last admin status");
@@ -68,5 +67,31 @@ public class PrivilegeService
         User user = mainGateway.getUserFromSecurity();
 
         return channelPrivilegeRepository.findByUserCipAndChannelChannelId(user.getCip(), channelId);
+    }
+
+    public void deleteRoomPrivilege(String userCip, int roomId)
+    {
+        RoomPrivilege roomprivilege = roomPrivilegeRepository.findByUserCipAndRoomRoomId(userCip, roomId);
+
+        if(roomprivilege == null)
+        {
+            System.out.println("Cannot delete a room privilege that does not exist");
+            return;
+        }
+
+        roomPrivilegeRepository.delete(roomprivilege);
+    }
+
+    public void deleteChannelPrivilege(String userCip, int channelId)
+    {
+        ChannelPrivilege channelPrivilege = channelPrivilegeRepository.findByUserCipAndChannelChannelId(userCip, channelId);
+
+        if(channelPrivilege == null)
+        {
+            System.out.println("Cannot delete a channel privilege that does not exist");
+            return;
+        }
+
+        channelPrivilegeRepository.delete(channelPrivilege);
     }
 }

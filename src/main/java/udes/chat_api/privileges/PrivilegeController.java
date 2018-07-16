@@ -55,4 +55,16 @@ public class PrivilegeController
 
         return privilegeAdapter.toDto(channelPrivilegeCreated);
     }
+
+    @DeleteMapping("/roomprivilege/{roomId}/{userCip}")
+    public void deleteRoomPrivilege(@PathVariable("roomId") int roomId, @PathVariable("userCip") String userCip)
+    {
+        privilegeGateway.deleteRoomPrivilege(userCip, roomId);
+    }
+
+    @DeleteMapping("/channelprivilege/{channelId}/{userCip}")
+    public void deleteChannelPrivilege(@PathVariable("channelId") int channelId, @PathVariable("userCip") String userCip)
+    {
+        privilegeGateway.deleteChannelPrivilege(userCip, channelId);
+    }
 }

@@ -1,6 +1,8 @@
 package udes.chat_api.rooms;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import udes.chat_api.gateway.RoomGateway;
 
@@ -23,7 +25,7 @@ public class RoomController
 
         return rooms.stream()
                 .map(room -> roomAdapter.toDto(room))
-                .collect(Collectors.toList());          //TODO: needed?
+                .collect(Collectors.toList());
     }
 
     // TODO: implement user privileges -> Only a certain type of user can create room
@@ -66,10 +68,15 @@ public class RoomController
     }
 
     @DeleteMapping("/room/{id}")
-    public RoomDto deleteRoom(@PathVariable("id") int roomId)
+    public ResponseEntity deleteRoom(@PathVariable("id") int roomId)
     {
         Room room = roomGateway.deleteRoom(roomId);
 
-        return roomAdapter.toDto(room);
+        if(room == null || room.getRoomId() == null)
+        {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Room deletion failed");
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(roomAdapter.toDto(room));
     }
 }
