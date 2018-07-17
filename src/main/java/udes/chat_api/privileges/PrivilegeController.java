@@ -34,7 +34,7 @@ public class PrivilegeController
 
         if(privileges == null || privileges.isEmpty())
         {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The use is not authorized to check privileges");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The user is not authorized to acces the room privileges");
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(privileges.stream()
@@ -69,6 +69,11 @@ public class PrivilegeController
     public ResponseEntity getChannelPrivileges(@PathVariable("channelId") int channelId)
     {
         List<ChannelPrivilege> privileges = privilegeGateway.getChannelPrivileges(channelId);
+
+        if(privileges == null || privileges.isEmpty())
+        {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The user is not authorized to acces the channel privileges");
+        }
 
         return ResponseEntity.status(HttpStatus.OK).body(privileges.stream()
                 .map(privilege -> privilegeAdapter.toDto(privilege))
