@@ -3,7 +3,7 @@ package udes.chat_api.constants;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PrivilegeType
+public class RoomPrivilegeTypes
 {
     public static final int admin = 1;
     public static final int moderator = 2;

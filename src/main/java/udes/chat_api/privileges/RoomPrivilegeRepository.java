@@ -1,4 +1,4 @@
-package udes.chat_api.room_privileges;
+package udes.chat_api.privileges;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -13,6 +13,8 @@ public interface RoomPrivilegeRepository extends CrudRepository<RoomPrivilege, L
     List<RoomPrivilege> findAll();
 
     List<RoomPrivilege> findByUserCip(String cip);
+
+    List<RoomPrivilege> findByRoomRoomId(int roomId);
 
     List<RoomPrivilege> findByRoomRoomIdAndType(int roomId, int type);
 

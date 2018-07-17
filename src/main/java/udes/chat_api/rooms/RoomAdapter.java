@@ -10,11 +10,21 @@ public class RoomAdapter
 
     public RoomDto toDto(Room room)
     {
+        if(room == null)
+        {
+            return null;
+        }
+
         return modelMapper.map(room, RoomDto.class);
     }
 
     public Room toEntity(RoomDto roomDto)
     {
+        if(roomDto == null)
+        {
+            return null;
+        }
+
         return modelMapper.map(roomDto, Room.class);
     }
 }

@@ -2,12 +2,14 @@ package udes.chat_api.gateway;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sun.applet.Main;
-import udes.chat_api.constants.PrivilegeType;
-import udes.chat_api.room_privileges.RoomPrivilege;
-import udes.chat_api.room_privileges.RoomPrivilegeRepository;
-import udes.chat_api.room_privileges.RoomPrivilegeService;
-import udes.chat_api.users.User;
+import udes.chat_api.channels.Channel;
+import udes.chat_api.channels.ChannelRepository;
+import udes.chat_api.constants.RoomPrivilegeTypes;
+import udes.chat_api.privileges.ChannelPrivilege;
+import udes.chat_api.privileges.RoomPrivilege;
+import udes.chat_api.privileges.PrivilegeService;
+import udes.chat_api.rooms.Room;
+import udes.chat_api.rooms.RoomRepository;
 
 import java.util.Collections;
 import java.util.List;
@@ -16,23 +18,107 @@ import java.util.List;
 public class PrivilegeGateway
 {
     @Autowired
-    private RoomPrivilegeService roomPrivilegeService;
+    private PrivilegeService privilegeService;
     @Autowired
     private MainGateway mainGateway;
+    @Autowired
+    private ChannelRepository channelRepository;
+    @Autowired
+    private RoomRepository roomRepository;
 
-    public RoomPrivilege createOrUpdatePrivilege(RoomPrivilege roomPrivilege)
+    public List<RoomPrivilege> getRoomPrivileges(int roomId)
     {
-        User user = mainGateway.getUserFromSecurity();
-        int roomId = roomPrivilege.getRoom().getRoomId();
-        List<Integer> authorizedUser = Collections.singletonList(PrivilegeType.admin);
+        Room room = roomRepository.findByRoomIdAndIsDeletedFalse(roomId);
 
-        // TODO: removed the hardcoded cip when merging with the CAS authentication
-        if(!roomPrivilegeService.userHasRequiredPrivilege(user.getCip(), authorizedUser, roomId))
+        if(room == null)
         {
-            System.out.println("The user does not have the required privileges");
+            System.out.println("The room you are trying to access does not exist or is deleted");
             return null;
         }
 
-        return roomPrivilegeService.createOrUpdatePrivilege(roomPrivilege);
+        if(!mainGateway.isAdminOrModerator(room))
+        {
+            return null;
+        }
+
+        return privilegeService.getRoomPrivileges(roomId);
+    }
+
+    public List<ChannelPrivilege> getChannelPrivileges(int channelId)
+    {
+        Channel channel = channelRepository.findByChannelIdAndIsDeletedFalse(channelId);
+
+        if(channel == null)
+        {
+            System.out.println("The channel you are trying to access does not exist or is deleted");
+            return null;
+        }
+
+        if(!mainGateway.isAdminOrModerator(channel.getRoom()))
+        {
+            return null;
+        }
+
+        return privilegeService.getChannelPrivileges(channelId);
+    }
+
+    public RoomPrivilege createOrUpdatePrivilege(RoomPrivilege roomPrivilege)
+    {
+        return privilegeService.createOrUpdatePrivilege(roomPrivilege);
+    }
+
+    public ChannelPrivilege createOrUpdatePrivilege(ChannelPrivilege channelPrivilege)
+    {
+        Channel channel = channelPrivilege.getChannel();
+
+        if(channel == null)
+        {
+            System.out.println("The channel you are trying to access does not exist or is deleted");
+            return null;
+        }
+
+        if(!mainGateway.isAdminOrModerator(channel.getRoom()))
+        {
+            System.out.println("The user does not have the required privileges to create a channel privilege");
+            return null;
+        }
+
+        return privilegeService.createOrUpdatePrivilege(channelPrivilege);
+    }
+
+    public void deleteRoomPrivilege(String userCip, int roomId)
+    {
+        Room room = roomRepository.findByRoomIdAndIsDeletedFalse(roomId);
+
+        if(room == null)
+        {
+            System.out.println("The room you are trying to access does not exist or is deleted");
+            return;
+        }
+
+        if(!mainGateway.isAdminOrModerator(room))
+        {
+            return;
+        }
+
+        privilegeService.deleteRoomPrivilege(userCip, roomId);
+    }
+
+    public void deleteChannelPrivilege(String userCip, int channelId)
+    {
+        Channel channel = channelRepository.findByChannelIdAndIsDeletedFalse(channelId);
+
+        if(channel == null)
+        {
+            System.out.println("The channel you are trying to access does not exist or is deleted");
+            return;
+        }
+
+        if(!mainGateway.isAdminOrModerator(channel.getRoom()))
+        {
+            return;
+        }
+
+        privilegeService.deleteChannelPrivilege(userCip, channelId);
     }
 }

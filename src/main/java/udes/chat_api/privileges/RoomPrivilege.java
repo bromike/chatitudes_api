@@ -1,4 +1,4 @@
-package udes.chat_api.room_privileges;
+package udes.chat_api.privileges;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -24,6 +24,6 @@ public class RoomPrivilege implements Serializable
     @JoinColumn(name = "room_id", nullable = false)
     private Room room;
 
-    @Column(name = "privilegetype_id")
+    @Column(name = "roomprivilegetype_id", nullable = false)
     private int type;
 }

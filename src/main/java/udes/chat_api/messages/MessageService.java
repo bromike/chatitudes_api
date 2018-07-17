@@ -1,5 +1,6 @@
 package udes.chat_api.messages;
 
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,12 +19,9 @@ public class MessageService
 
     public Message createMessage(Message message)
     {
-        return messageRepository.save(message);
-    }
+        message.setTime(DateTime.now());
 
-    public Message getMessage(int messageId)
-    {
-        return messageRepository.findByMessageIdAndIsDeletedFalse(messageId);
+        return messageRepository.save(message);
     }
 
     public Message updateMessage(Message message)
@@ -32,25 +30,27 @@ public class MessageService
 
         if(messageToUpdate == null)
         {
-            // Error handling, cannot update a message that does not exist
-            return null;
+            System.out.println("The message you are trying to update does not exist");
+            return new Message();
         }
 
         return messageRepository.save(message);
     }
 
-    public Message deleteMessage(int messageId)
+    public Message deleteMessage(Message message)
     {
-        Message messageToDelete = messageRepository.findByMessageIdAndIsDeletedFalse(messageId);
-
-        if(messageToDelete == null || messageToDelete.isDeleted())
+        if(message == null || message.isDeleted())
         {
-            // Error handling, cannot delete a message that does not exist
-            return null;
+            System.out.println("The message you are trying to delete does not exist or is already deleted");
+            return new Message();
         }
 
-        messageToDelete.setDeleted(true);
+        message.setDeleted(true);
+        return messageRepository.save(message);
+    }
 
-        return messageRepository.save(messageToDelete);
+    public Message getMessage(int messageId)
+    {
+        return messageRepository.findByMessageId(messageId);
     }
 }

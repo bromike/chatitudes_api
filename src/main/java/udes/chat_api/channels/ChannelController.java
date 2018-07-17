@@ -1,6 +1,8 @@
 package udes.chat_api.channels;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import udes.chat_api.gateway.ChannelGateway;
 
@@ -17,58 +19,55 @@ public class ChannelController
     private ChannelAdapter channelAdapter;
 
     @GetMapping("/channel")
-    public List<ChannelDto> getChannelsByRoomId(@RequestParam int roomId)
+    public ResponseEntity getChannelsByRoomId(@RequestParam int roomId)
     {
         List<Channel> channels = channelGateway.getChannelsByRoomId(roomId);
 
-        return channels.stream()
+        return ResponseEntity.status(HttpStatus.OK).body(channels.stream()
                 .map(channel -> channelAdapter.toDto(channel))
-                .collect(Collectors.toList());          //TODO: needed?
+                .collect(Collectors.toList()));
     }
 
     @PostMapping("/channel")
-    public ChannelDto createChannel(@RequestBody ChannelDto channelDto)
+    public ResponseEntity createChannel(@RequestBody ChannelDto channelDto)
     {
         Channel channel = channelAdapter.toEntity(channelDto);
 
         Channel channelCreated = channelGateway.createChannel(channel);
 
-        return channelAdapter.toDto(channelCreated);
+        if(channelCreated == null || channelCreated.getChannelId() == null)
+        {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Channel creation failed");
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(channelAdapter.toDto(channelCreated));
     }
 
     @PutMapping("/channel")
-    public ChannelDto updateChannel(@RequestBody ChannelDto channelDto)
+    public ResponseEntity updateChannel(@RequestBody ChannelDto channelDto)
     {
         Channel channel = channelAdapter.toEntity(channelDto);
 
         Channel updatedChannel = channelGateway.updateChannel(channel);
 
-        return channelAdapter.toDto(updatedChannel);
-    }
+        if(updatedChannel == null || updatedChannel.getChannelId() == null)
+        {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Channel update failed");
+        }
 
-    @PostMapping("/channel/search")
-    public List<ChannelDto> searchChannel(@RequestBody String query)
-    {
-        List<Channel> channels = channelGateway.searchChannel(query);
-
-        return channels.stream()
-                .map(channel -> channelAdapter.toDto(channel))
-                .collect(Collectors.toList());
-    }
-
-    @GetMapping("/channel/{id}")
-    public ChannelDto getChannel(@PathVariable("id") int channelId)
-    {
-        Channel channel = channelGateway.getChannel(channelId);
-
-        return channelAdapter.toDto(channel);
+        return ResponseEntity.status(HttpStatus.OK).body(channelAdapter.toDto(updatedChannel));
     }
 
     @DeleteMapping("/channel/{id}")
-    public ChannelDto deleteChannel(@PathVariable("id") int channelId)
+    public ResponseEntity deleteChannel(@PathVariable("id") int channelId)
     {
         Channel channel = channelGateway.deleteChannel(channelId);
 
-        return channelAdapter.toDto(channel);
+        if(channel == null || channel.getChannelId() == null)
+        {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Channel deletion failed");
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(channelAdapter.toDto(channel));
     }
 }

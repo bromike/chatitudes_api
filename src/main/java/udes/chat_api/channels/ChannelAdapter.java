@@ -12,6 +12,11 @@ public class ChannelAdapter
 
     public ChannelDto toDto(Channel channel)
     {
+        if(channel == null)
+        {
+            return null;
+        }
+
         ChannelDto channelDto = new ChannelDto();
 
         channelDto.setChannelId(channel.getChannelId());
@@ -25,6 +30,10 @@ public class ChannelAdapter
 
     public Channel toEntity(ChannelDto channelDto)
     {
+        if(channelDto == null)
+        {
+            return null;
+        }
 
         Channel channel = new Channel();
 

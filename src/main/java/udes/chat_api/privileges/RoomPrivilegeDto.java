@@ -1,4 +1,4 @@
-package udes.chat_api.room_privileges;
+package udes.chat_api.privileges;
 
 import lombok.Getter;
 import lombok.Setter;
