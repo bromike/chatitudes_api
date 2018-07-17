@@ -30,11 +30,11 @@ public class RoomController
 
     // TODO: implement user privileges -> Only a certain type of user can create room
     @PostMapping("/room")
-    public ResponseEntity createRoom(@RequestBody RoomDto roomDto)
+    public ResponseEntity createOrUpdateRoom(@RequestBody RoomDto roomDto)
     {
         Room room = roomAdapter.toEntity(roomDto);
 
-        Room roomCreated = roomGateway.createRoom(room);
+        Room roomCreated = roomGateway.createOrUpdateRoom(room);
 
         if(roomCreated == null || roomCreated.getRoomId() == null)
         {
@@ -42,21 +42,6 @@ public class RoomController
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(roomAdapter.toDto(roomCreated));
-    }
-
-    @PutMapping("/room")
-    public ResponseEntity updateRoom(@RequestBody RoomDto roomDto)
-    {
-        Room room = roomAdapter.toEntity(roomDto);
-
-        Room updatedRoom = roomGateway.updateRoom(room);
-
-        if(updatedRoom == null || updatedRoom.getRoomId() == null)
-        {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Room update failed");
-        }
-
-        return ResponseEntity.status(HttpStatus.OK).body(roomAdapter.toDto(updatedRoom));
     }
 
     @PostMapping("/room/search")

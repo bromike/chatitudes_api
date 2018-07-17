@@ -44,17 +44,24 @@ public class RoomService
         return rooms;
     }
 
-    public Room createRoom(Room room)
+    public Room createOrUpdateRoom(Room room)
     {
         User user = mainGateway.getUserFromSecurity();
-
         RoomPrivilege roomPrivilege = new RoomPrivilege();
-        roomPrivilege.setUser(user);
-        roomPrivilege.setRoom(room);
-        roomPrivilege.setType(RoomPrivilegeTypes.admin);
 
-        roomRepository.save(room);
-        roomPrivilegeRepository.save(roomPrivilege);
+        if(room.getRoomId() == null)
+        {
+            roomPrivilege.setUser(user);
+            roomPrivilege.setRoom(room);
+            roomPrivilege.setType(RoomPrivilegeTypes.admin);
+
+            roomRepository.save(room);
+            roomPrivilegeRepository.save(roomPrivilege);
+        }
+        else
+        {
+            roomRepository.save(room);
+        }
 
         return room;
     }
@@ -63,12 +70,19 @@ public class RoomService
     {
         Room room = roomRepository.findByRoomIdAndIsDeletedFalse(roomId);
 
+        if(room == null)
+        {
+            System.out.println("The room you are trying to access does not exist or is deleted");
+            return null;
+        }
+
         if(!room.isPublic())
         {
             List<Integer> authorizedUser = Arrays.asList(RoomPrivilegeTypes.admin, RoomPrivilegeTypes.moderator, RoomPrivilegeTypes.member);
 
             if(!privilegeService.userHasRequiredPrivilege(authorizedUser, room.getRoomId()))
             {
+                System.out.println("Cannot access a privcate room that you are not member of");
                 return null;
             }
         }
@@ -79,19 +93,6 @@ public class RoomService
     public List<Room> searchRoom(String query)
     {
         return roomRepository.findByNameContainingAndIsDeletedFalse(query);
-    }
-
-    public Room updateRoom(Room room)
-    {
-        Room roomToUpdate = roomRepository.findByRoomIdAndIsDeletedFalse(room.getRoomId());
-
-        if(roomToUpdate == null)
-        {
-            System.out.println("Cannot update a room that does not exist");
-            return null;
-        }
-
-        return roomRepository.save(room);
     }
 
     public Room deleteRoom(int roomId)

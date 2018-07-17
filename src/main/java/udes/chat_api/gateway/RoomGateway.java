@@ -19,20 +19,18 @@ public class RoomGateway
     private PrivilegeService privilegeService;
     @Autowired
     private RoomService roomService;
-    @Autowired
-    private MainGateway mainGateway;
 
     public List<Room> getRooms()
     {
         return roomService.getRooms();
     }
 
-    public Room createRoom(Room room)
+    public Room createOrUpdateRoom(Room room)
     {
         // Check privileges
         // Return privilege error if the user does not have the required privileges
 
-        return roomService.createRoom(room);
+        return roomService.createOrUpdateRoom(room);
     }
 
     public Room getRoom(int roomId)
@@ -43,16 +41,6 @@ public class RoomGateway
     public List<Room> searchRoom(String query)
     {
         return roomService.searchRoom(query);
-    }
-
-    public Room updateRoom(Room room)
-    {
-        if(!mainGateway.isAdminOrModerator(room))
-        {
-            return null;
-        }
-
-        return roomService.updateRoom(room);
     }
 
     public Room deleteRoom(int roomId)

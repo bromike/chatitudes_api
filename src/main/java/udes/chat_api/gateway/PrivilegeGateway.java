@@ -30,6 +30,12 @@ public class PrivilegeGateway
     {
         Room room = roomRepository.findByRoomIdAndIsDeletedFalse(roomId);
 
+        if(room == null)
+        {
+            System.out.println("The room you are trying to access does not exist or is deleted");
+            return null;
+        }
+
         if(!mainGateway.isAdminOrModerator(room))
         {
             return null;
@@ -40,9 +46,15 @@ public class PrivilegeGateway
 
     public List<ChannelPrivilege> getChannelPrivileges(int channelId)
     {
-        Room room = channelRepository.findByChannelIdAndIsDeletedFalse(channelId).getRoom();
+        Channel channel = channelRepository.findByChannelIdAndIsDeletedFalse(channelId);
 
-        if(!mainGateway.isAdminOrModerator(room))
+        if(channel == null)
+        {
+            System.out.println("The channel you are trying to access does not exist or is deleted");
+            return null;
+        }
+
+        if(!mainGateway.isAdminOrModerator(channel.getRoom()))
         {
             return null;
         }
@@ -66,9 +78,15 @@ public class PrivilegeGateway
 
     public ChannelPrivilege createOrUpdatePrivilege(ChannelPrivilege channelPrivilege)
     {
-        Room room = channelPrivilege.getChannel().getRoom();
+        Channel channel = channelPrivilege.getChannel();
 
-        if(!mainGateway.isAdminOrModerator(room))
+        if(channel == null)
+        {
+            System.out.println("The channel you are trying to access does not exist or is deleted");
+            return null;
+        }
+
+        if(!mainGateway.isAdminOrModerator(channel.getRoom()))
         {
             System.out.println("The user does not have the required privileges to create a channel privilege");
             return null;
@@ -81,6 +99,12 @@ public class PrivilegeGateway
     {
         Room room = roomRepository.findByRoomIdAndIsDeletedFalse(roomId);
 
+        if(room == null)
+        {
+            System.out.println("The room you are trying to access does not exist or is deleted");
+            return;
+        }
+
         if(!mainGateway.isAdminOrModerator(room))
         {
             return;
@@ -92,6 +116,12 @@ public class PrivilegeGateway
     public void deleteChannelPrivilege(String userCip, int channelId)
     {
         Channel channel = channelRepository.findByChannelIdAndIsDeletedFalse(channelId);
+
+        if(channel == null)
+        {
+            System.out.println("The channel you are trying to access does not exist or is deleted");
+            return;
+        }
 
         if(!mainGateway.isAdminOrModerator(channel.getRoom()))
         {

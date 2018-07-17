@@ -12,8 +12,6 @@ public interface RoomRepository extends CrudRepository<Room, Long>
     @Override
     List<Room> findAll();
 
-    List<Room> findByIsDeletedFalse();
-
     List<Room> findByIsDeletedFalseAndIsPublicTrue();
 
     Room findByRoomIdAndIsDeletedFalse(int roomId);
