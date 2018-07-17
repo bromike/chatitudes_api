@@ -42,12 +42,12 @@ public class MessageGateway
             System.out.println("The user is trying to create a message in a restricted channel where he is not a moderator");
             return null;
         }
-        else if(channelPrivilege.getType() == ChannelPrivilegeTypes.muted || channelPrivilege.getType() == ChannelPrivilegeTypes.banned)
+        else if(channelPrivilege != null && (channelPrivilege.getType() == ChannelPrivilegeTypes.muted || channelPrivilege.getType() == ChannelPrivilegeTypes.banned))
         {
             System.out.println("The user is trying to create a message in a channel where he is muted or banned");
             return null;
         }
-        else if(!channel.isPublic() && channelPrivilege.getType() != ChannelPrivilegeTypes.member)
+        else if(!channel.isPublic() && channelPrivilege != null && channelPrivilege.getType() != ChannelPrivilegeTypes.member)
         {
             System.out.println("The user is trying to create a message in a private channel that he is not member of");
             return null;
