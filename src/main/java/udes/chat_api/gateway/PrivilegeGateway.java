@@ -64,15 +64,6 @@ public class PrivilegeGateway
 
     public RoomPrivilege createOrUpdatePrivilege(RoomPrivilege roomPrivilege)
     {
-        int roomId = roomPrivilege.getRoom().getRoomId();
-        List<Integer> authorizedUser = Collections.singletonList(RoomPrivilegeTypes.admin);
-
-        if(!privilegeService.userHasRequiredPrivilege(authorizedUser, roomId))
-        {
-            System.out.println("The user does not have the required privileges to create a room privilege");
-            return null;
-        }
-
         return privilegeService.createOrUpdatePrivilege(roomPrivilege);
     }
 
