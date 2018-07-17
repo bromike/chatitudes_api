@@ -2,11 +2,11 @@ package udes.chat_api.rooms;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import udes.chat_api.constants.PrivilegeType;
+import udes.chat_api.constants.RoomPrivilegeTypes;
 import udes.chat_api.gateway.MainGateway;
-import udes.chat_api.room_privileges.RoomPrivilege;
-import udes.chat_api.room_privileges.RoomPrivilegeRepository;
-import udes.chat_api.room_privileges.RoomPrivilegeService;
+import udes.chat_api.privileges.RoomPrivilege;
+import udes.chat_api.privileges.RoomPrivilegeRepository;
+import udes.chat_api.privileges.PrivilegeService;
 import udes.chat_api.users.User;
 
 import java.util.Arrays;
@@ -20,7 +20,7 @@ public class RoomService
     @Autowired
     private RoomPrivilegeRepository roomPrivilegeRepository;
     @Autowired
-    private RoomPrivilegeService roomPrivilegeService;
+    private PrivilegeService privilegeService;
     @Autowired
     private MainGateway mainGateway;
 
@@ -44,32 +44,47 @@ public class RoomService
         return rooms;
     }
 
-    public Room createRoom(Room room)
+    public Room createOrUpdateRoom(Room room)
     {
         User user = mainGateway.getUserFromSecurity();
-
         RoomPrivilege roomPrivilege = new RoomPrivilege();
-        roomPrivilege.setUser(user);
-        roomPrivilege.setRoom(room);
-        roomPrivilege.setType(PrivilegeType.admin);
 
-        roomRepository.save(room);
-        roomPrivilegeRepository.save(roomPrivilege);
+        if(room.getRoomId() == null)
+        {
+            roomPrivilege.setUser(user);
+            roomPrivilege.setRoom(room);
+            roomPrivilege.setType(RoomPrivilegeTypes.admin);
 
-        return room;
+            roomRepository.save(room);
+            roomPrivilegeRepository.save(roomPrivilege);
+            return room;
+        }
+        else if(mainGateway.isAdminOrModerator(room))
+        {
+            roomRepository.save(room);
+            return room;
+        }
+
+        return null;
     }
 
     public Room getRoom(int roomId)
     {
-        User user = mainGateway.getUserFromSecurity();
         Room room = roomRepository.findByRoomIdAndIsDeletedFalse(roomId);
+
+        if(room == null)
+        {
+            System.out.println("The room you are trying to access does not exist or is deleted");
+            return null;
+        }
 
         if(!room.isPublic())
         {
-            List<Integer> authorizedUser = Arrays.asList(PrivilegeType.admin, PrivilegeType.moderator, PrivilegeType.member);
+            List<Integer> authorizedUser = Arrays.asList(RoomPrivilegeTypes.admin, RoomPrivilegeTypes.moderator, RoomPrivilegeTypes.member);
 
-            if(!roomPrivilegeService.userHasRequiredPrivilege(user.getCip(), authorizedUser, room.getRoomId()))
+            if(!privilegeService.userHasRequiredPrivilege(authorizedUser, room.getRoomId()))
             {
+                System.out.println("Cannot access a privcate room that you are not member of");
                 return null;
             }
         }
@@ -80,19 +95,6 @@ public class RoomService
     public List<Room> searchRoom(String query)
     {
         return roomRepository.findByNameContainingAndIsDeletedFalse(query);
-    }
-
-    public Room updateRoom(Room room)
-    {
-        Room roomToUpdate = roomRepository.findByRoomIdAndIsDeletedFalse(room.getRoomId());
-
-        if(roomToUpdate == null)
-        {
-            System.out.println("Cannot update a room that does not exist");
-            return null;
-        }
-
-        return roomRepository.save(room);
     }
 
     public Room deleteRoom(int roomId)

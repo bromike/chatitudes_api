@@ -1,6 +1,8 @@
 package udes.chat_api.rooms;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import udes.chat_api.gateway.RoomGateway;
 
@@ -17,59 +19,64 @@ public class RoomController
     private RoomAdapter roomAdapter;
 
     @GetMapping("/room")
-    public List<RoomDto> getRooms()
+    public ResponseEntity getRooms()
     {
         List<Room> rooms = roomGateway.getRooms();
 
-        return rooms.stream()
+        return ResponseEntity.status(HttpStatus.OK).body(rooms.stream()
                 .map(room -> roomAdapter.toDto(room))
-                .collect(Collectors.toList());          //TODO: needed?
+                .collect(Collectors.toList()));
     }
 
     // TODO: implement user privileges -> Only a certain type of user can create room
     @PostMapping("/room")
-    public RoomDto createRoom(@RequestBody RoomDto roomDto)
+    public ResponseEntity createOrUpdateRoom(@RequestBody RoomDto roomDto)
     {
         Room room = roomAdapter.toEntity(roomDto);
 
-        Room roomCreated = roomGateway.createRoom(room);
+        Room roomCreated = roomGateway.createOrUpdateRoom(room);
 
-        return roomAdapter.toDto(roomCreated);
-    }
+        if(roomCreated == null || roomCreated.getRoomId() == null)
+        {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Room creation or update failed");
+        }
 
-    @PutMapping("/room")
-    public RoomDto updateRoom(@RequestBody RoomDto roomDto)
-    {
-        Room room = roomAdapter.toEntity(roomDto);
-
-        Room updatedRoom = roomGateway.updateRoom(room);
-
-        return roomAdapter.toDto(updatedRoom);
+        return ResponseEntity.status(HttpStatus.OK).body(roomAdapter.toDto(roomCreated));
     }
 
     @PostMapping("/room/search")
-    public List<RoomDto> searchRoom(@RequestBody String query)
+    public ResponseEntity searchRoom(@RequestBody String query)
     {
         List<Room> rooms = roomGateway.searchRoom(query);
 
-        return rooms.stream()
+        return ResponseEntity.status(HttpStatus.OK).body(rooms.stream()
                 .map(room -> roomAdapter.toDto(room))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
     @GetMapping("/room/{id}")
-    public RoomDto getRoom(@PathVariable("id") int roomId)
+    public ResponseEntity getRoom(@PathVariable("id") int roomId)
     {
         Room room = roomGateway.getRoom(roomId);
 
-        return roomAdapter.toDto(room);
+        if(room == null || room.getRoomId() == null)
+        {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Room get failed");
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(roomAdapter.toDto(room));
     }
 
     @DeleteMapping("/room/{id}")
-    public RoomDto deleteRoom(@PathVariable("id") int roomId)
+    public ResponseEntity deleteRoom(@PathVariable("id") int roomId)
     {
         Room room = roomGateway.deleteRoom(roomId);
 
-        return roomAdapter.toDto(room);
+        if(room == null || room.getRoomId() == null)
+        {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Room deletion failed");
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(roomAdapter.toDto(room));
     }
 }
