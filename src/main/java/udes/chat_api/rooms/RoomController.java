@@ -38,7 +38,7 @@ public class RoomController
 
         if(roomCreated == null || roomCreated.getRoomId() == null)
         {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Room creation failed");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Room creation or update failed");
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(roomAdapter.toDto(roomCreated));

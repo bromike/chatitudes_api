@@ -32,6 +32,11 @@ public class PrivilegeController
     {
         List<RoomPrivilege> privileges = privilegeGateway.getRoomPrivileges(roomId);
 
+        if(privileges == null || privileges.isEmpty())
+        {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The use is not authorized to check privileges");
+        }
+
         return ResponseEntity.status(HttpStatus.OK).body(privileges.stream()
                 .map(privilege -> privilegeAdapter.toDto(privilege))
                 .collect(Collectors.toList()));

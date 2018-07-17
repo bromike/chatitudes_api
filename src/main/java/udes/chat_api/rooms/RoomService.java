@@ -58,12 +58,12 @@ public class RoomService
             roomRepository.save(room);
             roomPrivilegeRepository.save(roomPrivilege);
         }
-        else
+        else if(mainGateway.isAdminOrModerator(room))
         {
             roomRepository.save(room);
         }
 
-        return room;
+        return null;
     }
 
     public Room getRoom(int roomId)
